@@ -4,23 +4,25 @@ import {
     OneToMany,
     PrimaryGeneratedColumn,
     UpdateDateColumn,
+    ManyToOne,
+    JoinColumn
 } from "typeorm";
-import { PaidTicket } from "./paid_ticket.entity";
+import { User } from "./user.entity";
 
-@Entity('user')
-export class User implements BaseEntity {
+@Entity('paid_ticket')
+export class PaidTicket implements BaseEntity {
     @PrimaryGeneratedColumn({
         name: 'id',
         type: 'int',
     })
     id: number;
     @Column({
-        name: 'name',
-        type: 'nvarchar',
+        name: 'user_id',
+        type: 'int',
         length: 255,
         charset: 'utf8'
     })
-    name: string
+    user_id: number
     @Column({
         name: "status_account",
         type: "int"
@@ -105,6 +107,11 @@ export class User implements BaseEntity {
         nullable: true,
     })
     deletedAt?: Date;
-    @OneToMany(() => PaidTicket, (p) => p.user_id)
-    products: PaidTicket[];
+
+    @ManyToOne(() => User, (b) => b.id)
+    @JoinColumn({
+        name: 'user_id',
+    })
+    user: User;
+
 }
