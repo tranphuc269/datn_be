@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  datn_chung_api:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    command: npm run start:debug datn_chung_api
+    ports:
+      - 3000:3000
+      - 9229:9229
+    volumes:
+      - ./:./usr/src/app
+      - node_modules:/usr/src/app/node_modules/
+    environment:
+      DB_HOST: mysqldb
+    env_file:
+      - ./.env   
+    depends_on:
+      - mysqldb
+
+  mysqldb:
+    image: mysql:5.7
+    command: --default-authentication-plugin=mysql_native_password
+    ports:
+      - 3306:3306
+    volumes:
+      - mysqldata:/var/lib/mysql
+      - ./docker/mysql/data:/docker-entrypoint-initdb.d
+      - ./docker/mysql/conf.d:/etc/mysql/conf.d
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+      MYSQL_DATABASE: datn_chung_db
+
+volumes:
+  mysqldata:
+  node_modules:
