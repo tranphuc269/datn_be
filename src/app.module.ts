@@ -5,10 +5,12 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { ConfigurationModule } from './config/configuration.module';
+import { UserModule } from "./user/user.module"
 
 @Module({
   imports: [
     ConfigurationModule,
+    UserModule,
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -29,5 +31,5 @@ import { ConfigurationModule } from './config/configuration.module';
   providers: [AppService],
 })
 export class AppModule {
-  constructor(private dataSource: DataSource) {}
+  constructor(private dataSource: DataSource) { }
 }

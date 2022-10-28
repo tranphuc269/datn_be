@@ -1,4 +1,9 @@
 {
-  "singleQuote": true,
-  "trailingComma": "all"
+  "arrowParens": "always",
+  "endOfLine": "crlf",
+  "semi": true,
+  "doubleQuote": true,
+  "printWidth": 80,
+  "formatOnSave": true,
+  "tabWidth": 2
 }
