@@ -3,7 +3,6 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { DataSource } from 'typeorm';
 import { ConfigurationModule } from './config/configuration.module';
 
 @Module({
@@ -19,15 +18,14 @@ import { ConfigurationModule } from './config/configuration.module';
         password: configService.get<string>('database.pass'),
         port: configService.get<number>('database.port'),
         host: configService.get<string>('database.host'),
-        entities: [__dirname + 'src/models/entities/*.entity{.ts,.js}'],
+        entities: [__dirname + '/**/entities/*.entity{.ts,.js}'],
         synchronize: false,
-        migration: [__dirname + '/src/migrations/*{.ts,.js}'],
+        autoLoadEntities: true,
+        migration: [__dirname + '/migrations/*{.ts,.js}'],
       }),
     }),
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {
-  constructor(private dataSource: DataSource) {}
-}
+export class AppModule {}

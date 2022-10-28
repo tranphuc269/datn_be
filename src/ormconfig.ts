@@ -10,8 +10,8 @@ const defaultDataSource = new DataSource({
   password: process.env.DB_PASS,
   port: Number(process.env.DB_PORT),
   host: process.env.DB_HOST,
-  entities: [__dirname + '/src/models/entities/*.entity{.ts,.js}'],
+  entities: [__dirname + '/**/entities/*.entity{.ts,.js}'],
   synchronize: false,
-  migrations: [__dirname + '/src/migrations/*{.ts,.js}'],
+  migrations: [__dirname + '/migrations/*{.ts,.js}'],
 });
 export default defaultDataSource;

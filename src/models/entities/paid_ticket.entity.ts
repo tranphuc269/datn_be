@@ -21,8 +21,6 @@ export class PaidTicket implements BaseEntity {
   @Column({
     name: 'user_id',
     type: 'int',
-    length: 255,
-    charset: 'utf8',
   })
   user_id: number;
   @Column({
