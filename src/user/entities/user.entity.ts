@@ -1,4 +1,3 @@
-import { BaseEntity } from 'src/shared/entities/base.entity';
 import {
   Column,
   CreateDateColumn,
@@ -10,8 +9,8 @@ import {
 } from 'typeorm';
 import { PaidTicket } from './paid_ticket.entity';
 
-@Entity('user')
-export class User implements BaseEntity {
+@Entity('users')
+export class User {
   @PrimaryGeneratedColumn({
     name: 'id',
     type: 'int',
@@ -108,6 +107,8 @@ export class User implements BaseEntity {
     nullable: true,
   })
   deletedAt?: Date;
-  @OneToMany(() => PaidTicket, (p) => p.user_id)
-  products: PaidTicket[];
+
+  @OneToMany(() => PaidTicket, (p) => p.user)
+  paidTickets: PaidTicket[];
 }
+
