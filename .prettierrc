@@ -2,7 +2,7 @@
   "arrowParens": "always",
   "endOfLine": "crlf",
   "semi": true,
-  "doubleQuote": true,
+  "singleQuote": true,
   "printWidth": 80,
   "formatOnSave": true,
   "tabWidth": 2
