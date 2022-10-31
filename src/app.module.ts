@@ -24,6 +24,7 @@ import { UserModule } from './user/user.module';
         synchronize: false,
         autoLoadEntities: true,
         migration: [__dirname + '/migrations/*{.ts,.js}'],
+        
       }),
     }),
   ],

@@ -16,6 +16,9 @@ $ docker exec -it <container_name> npm run migration:run
 #migration revert
 $ docker exec -it <container_name> npm run migration:revert
 
+#after delete migration file
+$ docker exec -it <container_name> npm run build
+
 ```
 
 ## Description

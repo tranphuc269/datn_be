@@ -13,5 +13,6 @@ const defaultDataSource = new DataSource({
   entities: [__dirname + '/**/entities/*.entity{.ts,.js}'],
   synchronize: false,
   migrations: [__dirname + '/migrations/*{.ts,.js}'],
+  migrationsTransactionMode: 'all'
 });
 export default defaultDataSource;
