@@ -22,7 +22,7 @@ export class PaidTicket {
     name: 'user_id',
     type: 'int',
   })
-  userID: number;
+  userId: number;
 
   @CreateDateColumn({
     name: 'created_at',

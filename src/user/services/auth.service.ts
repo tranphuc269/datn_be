@@ -35,7 +35,7 @@ export class AuthService {
       );
     }
   }
-  public async login(email: string, hashedPassword) {
+  public async login(email: string, hashedPassword: string) {
     try {
       const user = await this.userService.getByEmail(email);
       const isPasswordCorrect = await bcrypt.compare(

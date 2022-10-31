@@ -10,5 +10,3 @@ export class CreateUserDto {
     gender: number;
     nationalId: number;
 }
-
-export default CreateUserDto;

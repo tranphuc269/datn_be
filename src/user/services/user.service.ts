@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import CreateUserDto from '../dtos/createUser.dto';
+import { CreateUserDto } from '../dtos/createUser.dto';
 import { User } from '../entities/user.entity';
 import { UserRepository } from '../repositories/user.repository';
 import { Repository } from 'typeorm';
@@ -25,7 +25,7 @@ export class UserService {
 
   async create(userData: CreateUserDto) {
     try {
-      const newUser = await this.userRepository.create(userData);
+      const newUser = this.userRepository.create(userData);
       await this.userRepository.save(newUser);
       return newUser;
     } catch (error) {
