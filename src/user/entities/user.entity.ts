@@ -24,10 +24,10 @@ export class User {
   })
   name: string;
   @Column({
-    name: 'status_account',
+    name: 'account_status',
     type: 'int',
   })
-  status_account: number;
+  accountStatus: number;
   @Column({
     name: 'password',
     type: 'nvarchar',
@@ -41,17 +41,18 @@ export class User {
     length: 50,
     charset: 'utf8',
   })
-  first_name: string;
+  firstName: string;
   @Column({
     name: 'last_name',
     type: 'nvarchar',
     length: 50,
     charset: 'utf8',
   })
-  last_name: string;
+  lastName: string;
   @Column({
     name: 'birthday',
     type: 'datetime',
+    nullable: true
   })
   birthday: Date;
   @Column({
@@ -60,14 +61,15 @@ export class User {
     length: 20,
     charset: 'utf8',
   })
-  identification_id_obj: string;
+  identificationIdObj: string;
   @Column({
     name: 'passport_obj',
     type: 'nvarchar',
     length: 20,
     charset: 'utf8',
+    nullable: true
   })
-  passport_obj: string;
+  passportObj: string;
   @Column({
     name: 'email',
     type: 'nvarchar',
@@ -81,7 +83,7 @@ export class User {
     length: 20,
     charset: 'utf8',
   })
-  phone_number: string;
+  phoneNumber: string;
   @Column({
     name: 'gender',
     type: 'tinyint',
@@ -91,7 +93,7 @@ export class User {
     name: 'national_id',
     type: 'int',
   })
-  national_id: number;
+  nationalId: number;
   @CreateDateColumn({
     name: 'created_at',
   })
