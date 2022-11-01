@@ -43,7 +43,7 @@ export class TimeKeeping {
     name: 'morning_leave',
     type: 'datetime',
   })
-  morningLeft: Date;
+  morningLeave: Date;
 
   @Column({
     name: 'afternoon_join',
@@ -55,7 +55,7 @@ export class TimeKeeping {
     name: 'afternoon_leave',
     type: 'datetime',
   })
-  afternoonLeft: Date;
+  afternoonLeave: Date;
 
   @Column({
     name: 'odd_time',
