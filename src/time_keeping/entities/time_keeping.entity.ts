@@ -97,11 +97,11 @@ export class TimeKeeping {
   })
   user: User;
 
-  @ManyToOne(() => WorkAmount, (b) => b.timeKeeping)
+  @ManyToOne(() => WorkAmount, (b) => b.timeKeepings)
   @JoinColumn({ name: 'work_amount_id' })
   workAmount: WorkAmount;
 
-  @ManyToOne(() => WorkType, (b) => b.timeKeeping)
+  @ManyToOne(() => WorkType, (b) => b.timeKeepings)
   @JoinColumn({ name: 'work_type_id' })
   workType: WorkType;
 }
