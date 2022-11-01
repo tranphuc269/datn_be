@@ -40,7 +40,7 @@ export class TimeKeeping {
   morningJoin: Date;
 
   @Column({
-    name: 'morning_left',
+    name: 'morning_leave',
     type: 'datetime',
   })
   morningLeft: Date;
@@ -52,7 +52,7 @@ export class TimeKeeping {
   afternoonJoin: Date;
 
   @Column({
-    name: 'afternoon_left',
+    name: 'afternoon_leave',
     type: 'datetime',
   })
   afternoonLeft: Date;
