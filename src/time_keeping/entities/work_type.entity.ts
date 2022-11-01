@@ -36,5 +36,5 @@ export class WorkType {
   @JoinColumn({
     name: '',
   })
-  timeKeeping: TimeKeeping[];
+  timeKeepings: TimeKeeping[];
 }

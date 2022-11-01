@@ -39,5 +39,5 @@ export class WorkAmount {
   @JoinColumn({
     name: '',
   })
-  timeKeeping: TimeKeeping[];
+  timeKeepings: TimeKeeping[];
 }
