@@ -34,7 +34,7 @@ export class WorkType {
   deletedAt?: Date;
   @OneToMany(() => TimeKeeping, (b) => b.workType)
   @JoinColumn({
-    name: '',
+    name: 'time_keeping_id',
   })
   timeKeepings: TimeKeeping[];
 }
