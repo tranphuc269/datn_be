@@ -36,30 +36,35 @@ export class TimeKeeping {
   @Column({
     name: 'morning_join',
     type: 'datetime',
+    nullable: true,
   })
   morningJoin: Date;
 
   @Column({
     name: 'morning_leave',
     type: 'datetime',
+    nullable: true,
   })
   morningLeave: Date;
 
   @Column({
     name: 'afternoon_join',
     type: 'datetime',
+    nullable: true,
   })
   afternoonJoin: Date;
 
   @Column({
     name: 'afternoon_leave',
     type: 'datetime',
+    nullable: true,
   })
   afternoonLeave: Date;
 
   @Column({
     name: 'odd_time',
     type: 'int',
+    nullable: true,
   })
   oddTime: number;
 
