@@ -1,9 +1,11 @@
+import { TimeKeeping } from '../../time_keeping/entities/time_keeping.entity';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -112,5 +114,7 @@ export class User {
 
   @OneToMany(() => PaidTicket, (p) => p.user)
   paidTickets: PaidTicket[];
+  @OneToMany(() => TimeKeeping, (p) => p.user)
+  timeKeeping: TimeKeeping[];
 }
 

@@ -5,11 +5,12 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigurationModule } from './config/configuration.module';
 import { UserModule } from './user/user.module';
-
+import { TimeKeepingModule } from './time_keeping/time_keeping.module';
 @Module({
   imports: [
     ConfigurationModule,
     UserModule,
+    TimeKeepingModule,
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
