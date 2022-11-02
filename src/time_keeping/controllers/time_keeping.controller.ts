@@ -1,8 +1,8 @@
 import { Controller, Get } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { TimeKeepingService } from '../services/time_keeping.service';
-@Controller('users')
-@ApiTags('users')
+@Controller('time_keepings')
+@ApiTags('time_keepings')
 export class TimeKeepingController {
   constructor(private readonly timeKeepingService: TimeKeepingService) {}
 
