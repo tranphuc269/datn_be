@@ -70,12 +70,6 @@ export class OvertimeTicket {
   })
   reason: string;
 
-  @Column({
-    name: 'paid_type_id',
-    type: 'int',
-  })
-  typePaidId: number;
-
   @CreateDateColumn({
     name: 'created_at',
   })
@@ -92,17 +86,11 @@ export class OvertimeTicket {
   })
   deletedAt?: Date;
 
-  @ManyToOne(() => User, (b) => b.paidTickets)
+  @ManyToOne(() => User, (b) => b.overtimeTickets)
   @JoinColumn({
     name: 'create_person_id',
   })
-  user: User;
-
-  @ManyToOne(() => PaidType, (b) => b.paidTickets)
-  @JoinColumn({
-    name: 'paid_type_id',
-  })
-  paidType: PaidType;
+  createPerson: User;
 
   @ManyToOne(() => TicketStatus, (b) => b.overtimeTickets)
   @JoinColumn({
@@ -123,4 +111,16 @@ export class OvertimeTicket {
     },
   })
   users: User[];
+
+  @ManyToOne(() => User, (b) => b.overtimeTickets)
+  @JoinColumn({
+    name: 'approver_person_id',
+  })
+  approverPerson: User;
+
+  @ManyToOne(() => User, (b) => b.overtimeTickets)
+  @JoinColumn({
+    name: 'related_person_id',
+  })
+  relatedPerson: User;
 }

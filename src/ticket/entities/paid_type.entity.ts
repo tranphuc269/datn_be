@@ -1,10 +1,7 @@
-import {
-  Column,
-  Entity,
-  PrimaryGeneratedColumn,
-  OneToMany,
-} from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { OvertimeTicket } from './overtime_ticket.entity';
 import { PaidTicket } from './paid_ticket.entity';
+import { SupplementTicket } from './supplement_ticket.entity';
 
 @Entity('paid_types')
 export class PaidType {
