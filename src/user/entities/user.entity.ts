@@ -8,7 +8,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { PaidTicket } from './paid_ticket.entity';
+import { PaidTicket } from '../../paid_ticket/entities/paid_ticket.entity';
 
 @Entity('users')
 export class User {
