@@ -94,7 +94,7 @@ export class OvertimeTicket {
 
   @ManyToOne(() => User, (b) => b.paidTickets)
   @JoinColumn({
-    name: 'create_id',
+    name: 'create_person_id',
   })
   user: User;
 
