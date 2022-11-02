@@ -104,7 +104,7 @@ export class OvertimeTicket {
   })
   paidType: PaidType;
 
-  @ManyToOne(() => TicketStatus, (b) => b.paidTickets)
+  @ManyToOne(() => TicketStatus, (b) => b.overtimeTickets)
   @JoinColumn({
     name: 'ticket_status_id',
   })

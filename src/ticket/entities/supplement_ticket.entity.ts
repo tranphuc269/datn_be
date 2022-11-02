@@ -96,7 +96,7 @@ export class SupplementTicket {
   })
   user: User;
 
-  @ManyToOne(() => TicketStatus, (b) => b.paidTickets)
+  @ManyToOne(() => TicketStatus, (b) => b.supplementTickets)
   @JoinColumn({
     name: 'ticket_status_id',
   })

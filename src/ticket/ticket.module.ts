@@ -11,9 +11,7 @@ import { PaidTicketService } from './services/paid_ticket.service';
 @Module({
   imports: [
     ConfigModule,
-    TypeOrmModule.forFeature([PaidTicket]),
-    TypeOrmModule.forFeature([OvertimeTicket]),
-    TypeOrmModule.forFeature([SupplementTicket]),
+    TypeOrmModule.forFeature([PaidTicket, OvertimeTicket, SupplementTicket]),
   ],
   controllers: [PaidTicketController],
   providers: [PaidTicketService, PaidTicketRepository],
