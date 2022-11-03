@@ -140,6 +140,9 @@ export class User {
   @OneToMany(() => TimeKeeping, (p) => p.user)
   timeKeepings: TimeKeeping[];
 
+  @OneToMany(() => OvertimeTicket, (p) => p.createPerson)
+  overtimeTicketsCreate: OvertimeTicket[];
+
   @OneToOne(() => PaidAmount, (p) => p.user)
   @JoinColumn({
     name: 'paid_amount',

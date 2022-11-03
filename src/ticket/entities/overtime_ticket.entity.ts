@@ -31,6 +31,7 @@ export class OvertimeTicket {
   @Column({
     name: 'related_person_id',
     type: 'int',
+    nullable: true
   })
   relatedPersonId: number;
 
@@ -86,7 +87,7 @@ export class OvertimeTicket {
   })
   deletedAt?: Date;
 
-  @ManyToOne(() => User, (b) => b.overtimeTickets)
+  @ManyToOne(() => User, (b) => b.overtimeTicketsCreate)
   @JoinColumn({
     name: 'create_person_id',
   })
@@ -112,15 +113,4 @@ export class OvertimeTicket {
   })
   users: User[];
 
-  @ManyToOne(() => User, (b) => b.overtimeTickets)
-  @JoinColumn({
-    name: 'approver_person_id',
-  })
-  approverPerson: User;
-
-  @ManyToOne(() => User, (b) => b.overtimeTickets)
-  @JoinColumn({
-    name: 'related_person_id',
-  })
-  relatedPerson: User;
 }

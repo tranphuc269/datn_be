@@ -29,6 +29,7 @@ export class PaidTicket {
   @Column({
     name: 'related_person_id',
     type: 'int',
+    nullable: true
   })
   relatedPersonId: number;
 
@@ -41,6 +42,7 @@ export class PaidTicket {
   @Column({
     name: 'substitute_person_id',
     type: 'int',
+    nullable: true
   })
   substitutePersonId: number;
 

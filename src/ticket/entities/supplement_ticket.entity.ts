@@ -29,6 +29,7 @@ export class SupplementTicket {
   @Column({
     name: 'related_person_id',
     type: 'int',
+    nullable: true
   })
   relatedPersonId: number;
 
