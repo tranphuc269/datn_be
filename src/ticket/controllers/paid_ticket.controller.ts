@@ -4,10 +4,16 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Param,
   Post,
+  Put,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { CreatePaidTicketDto } from '../dtos/create-paid.dto';
+import { BaseApiResponse } from 'src/shared/dtos/base-api-response.dto';
+import { ReqContext } from '../../shared/request-context/req-context.decorator';
+import { RequestContext } from '../../shared/request-context/request-context';
+import { CreatePaidTicketInput } from '../dtos/create-paid-input.dto';
+import { PaidTicketOutput } from '../dtos/create-paid-output.dto';
 import { PaidTicketService } from '../services/paid_ticket.service';
 @Controller('paid_tickets')
 @ApiTags('paid_tickets')
@@ -21,12 +27,26 @@ export class PaidTicketController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  async createPaidTicket(@Body() input: CreatePaidTicketDto) {
-    return this.paidTicketService.createPaidTicket(input);
+  async createPaidTicket(
+    @ReqContext() ctx: RequestContext,
+    @Body() input: CreatePaidTicketInput
+  ): Promise<BaseApiResponse<PaidTicketOutput>> {
+    const data = await this.paidTicketService.createPaidTicket(ctx, input);
+    return { data, meta: {} };
   }
 
-  @Post('update-paid')
-  async updatePaidTicket(@Body() id: number, input: CreatePaidTicketDto) {
-    return this.paidTicketService.updatePaidTicket(id, input);
+  @Put(':id')
+  @HttpCode(HttpStatus.OK)
+  async updateTicket(
+    @ReqContext() ctx: RequestContext,
+    @Body() input: any,
+    @Param('id') id: number
+  ): Promise<BaseApiResponse<PaidTicketOutput>> {
+    const data = await this.paidTicketService.updatePaidTicket(ctx, input, id);
+    return { data };
   }
+  // @Post('update-paid')
+  // async updatePaidTicket(@Body() id: number, input: CreatePaidTicketInput) {
+  //   return this.paidTicketService.updatePaidTicket(id, input);
+  // }
 }
