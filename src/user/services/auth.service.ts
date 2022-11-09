@@ -37,7 +37,7 @@ export class AuthService {
   }
   public async login(email: string, hashedPassword: string) {
     try {
-      const user = await this.userService.getByEmail(email);
+      const user = await this.userService.getByWorkEmail(email);
       const isPasswordCorrect = await bcrypt.compare(
         hashedPassword,
         user.password
@@ -63,7 +63,7 @@ export class AuthService {
     plainTextPassword: string
   ) {
     try {
-      const user = await this.userService.getByEmail(email);
+      const user = await this.userService.getByWorkEmail(email);
       await this.verifyPassword(plainTextPassword, user.password);
     } catch (error) {
       console.log(error)

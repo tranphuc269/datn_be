@@ -16,6 +16,8 @@ import { PaidTicket } from '../../ticket/entities/paid_ticket.entity';
 import { PaidAmount } from '../../ticket/entities/paid_amount.entity';
 import { SupplementTicket } from '../../ticket/entities/supplement_ticket.entity';
 import { OvertimeTicket } from '../../ticket/entities/overtime_ticket.entity';
+import { UserPersonal } from './user-personal.entity';
+import { UserWork } from './user-work.entity';
 
 @Entity('users')
 export class User {
@@ -24,14 +26,6 @@ export class User {
     type: 'int',
   })
   id: number;
-
-  @Column({
-    name: 'name',
-    type: 'nvarchar',
-    length: 255,
-    charset: 'utf8',
-  })
-  name: string;
 
   @Column({
     name: 'account_status',
@@ -46,74 +40,6 @@ export class User {
     charset: 'utf8',
   })
   password: string;
-
-  @Column({
-    name: 'first_name',
-    type: 'nvarchar',
-    length: 50,
-    charset: 'utf8',
-  })
-  firstName: string;
-
-  @Column({
-    name: 'last_name',
-    type: 'nvarchar',
-    length: 50,
-    charset: 'utf8',
-  })
-  lastName: string;
-
-  @Column({
-    name: 'birthday',
-    type: 'datetime',
-    nullable: true,
-  })
-  birthday: Date;
-
-  @Column({
-    name: 'identification_id_obj',
-    type: 'nvarchar',
-    length: 20,
-    charset: 'utf8',
-  })
-  identificationIdObj: string;
-
-  @Column({
-    name: 'passport_obj',
-    type: 'nvarchar',
-    length: 20,
-    charset: 'utf8',
-    nullable: true,
-  })
-  passportObj: string;
-
-  @Column({
-    name: 'email',
-    type: 'nvarchar',
-    length: 255,
-    charset: 'utf8',
-  })
-  email: string;
-
-  @Column({
-    name: 'phone_number',
-    type: 'nvarchar',
-    length: 20,
-    charset: 'utf8',
-  })
-  phoneNumber: string;
-
-  @Column({
-    name: 'gender',
-    type: 'tinyint',
-  })
-  gender: number;
-
-  @Column({
-    name: 'national_id',
-    type: 'int',
-  })
-  nationalId: number;
 
   @CreateDateColumn({
     name: 'created_at',
@@ -148,6 +74,18 @@ export class User {
     name: 'paid_amount',
   })
   paidAmount: PaidAmount;
+  
+  @OneToOne(() => UserPersonal, (p) => p.user)
+  @JoinColumn({
+    name: 'user_personal',
+  })
+  userPersonalInfo: UserPersonal;
+  
+  @OneToOne(() => UserPersonal, (p) => p.user)
+  @JoinColumn({
+    name: 'user_work',
+  })
+  userWorkInfo: UserWork;
 
   @ManyToMany(() => OvertimeTicket, (p) => p, { cascade: true })
   overtimeTickets: OvertimeTicket[];
