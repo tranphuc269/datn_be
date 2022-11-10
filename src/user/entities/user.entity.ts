@@ -6,6 +6,7 @@ import {
   JoinColumn,
   JoinTable,
   ManyToMany,
+  ManyToOne,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -18,6 +19,8 @@ import { SupplementTicket } from '../../ticket/entities/supplement_ticket.entity
 import { OvertimeTicket } from '../../ticket/entities/overtime_ticket.entity';
 import { UserPersonal } from './user-personal.entity';
 import { UserWork } from './user-work.entity';
+import { Role } from './role.entity';
+import { ContactUser } from './contact-user.entity';
 
 @Entity('users')
 export class User {
@@ -32,6 +35,20 @@ export class User {
     type: 'int',
   })
   accountStatus: number;
+
+  @Column({
+    name: 'role',
+    type: 'int',
+  })
+  role: number;
+
+  @Column({
+    name: 'email',
+    type: 'nvarchar',
+    length: 255,
+    charset: 'utf8',
+  })
+  email: string;
 
   @Column({
     name: 'password',
@@ -74,19 +91,31 @@ export class User {
     name: 'paid_amount',
   })
   paidAmount: PaidAmount;
-  
+
   @OneToOne(() => UserPersonal, (p) => p.user)
   @JoinColumn({
     name: 'user_personal',
   })
   userPersonalInfo: UserPersonal;
-  
-  @OneToOne(() => UserPersonal, (p) => p.user)
+
+  @OneToOne(() => UserWork, (p) => p.user)
   @JoinColumn({
     name: 'user_work',
   })
   userWorkInfo: UserWork;
 
+  @OneToOne(() => ContactUser, (p) => p.user)
+  @JoinColumn({
+    name: 'contact_user',
+  })
+  contactUserInfo: ContactUser;
+
   @ManyToMany(() => OvertimeTicket, (p) => p, { cascade: true })
   overtimeTickets: OvertimeTicket[];
+
+  @ManyToOne(() => Role, (b) => b.users)
+  @JoinColumn({
+    name: 'role',
+  })
+  roleId: Role;
 }

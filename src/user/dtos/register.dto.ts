@@ -1,14 +1,25 @@
-export class RegisterDto {
-  email: string;
-  name: string;
-  password: string;
-  accountStatus: number;
-  firstName: string;
-  lastName: string;
-  identificationIdObj: string;
-  phoneNumber: string;
-  gender: number;
-  nationalId: number;
-}
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Expose } from 'class-transformer';
+import { IsEnum, IsNotEmpty, IsOptional } from 'class-validator';
 
-export default RegisterDto;
+export class UserInput {
+  @ApiProperty()
+  @Expose()
+  @IsNotEmpty()
+  accountStatus: number;
+
+  @IsNotEmpty()
+  @ApiProperty()
+  @Expose()
+  role: number;
+
+  @IsNotEmpty()
+  @ApiProperty()
+  @Expose()
+  password: string;
+
+  @IsNotEmpty()
+  @ApiProperty()
+  @Expose()
+  email: string;
+}

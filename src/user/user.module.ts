@@ -9,10 +9,24 @@ import { LocalStrategy } from './strategies/local.strategy';
 import { AuthService } from './services/auth.service';
 import { AuthController } from './controllers/auth.controller';
 import { JwtService } from '@nestjs/jwt';
+import { UserPersonalRepository } from './repositories/user-personal.repository';
 @Module({
   imports: [ConfigModule, TypeOrmModule.forFeature([User])],
   controllers: [UserController, AuthController],
-  exports: [UserService,JwtService, UserRepository, AuthService],
-  providers: [UserService,JwtService, UserRepository, AuthService, LocalStrategy],
+  exports: [
+    JwtService,
+    UserService,
+    UserRepository,
+    AuthService,
+    UserPersonalRepository,
+  ],
+  providers: [
+    JwtService,
+    UserService,
+    UserRepository,
+    UserPersonalRepository,
+    AuthService,
+    LocalStrategy,
+  ],
 })
 export class UserModule {}

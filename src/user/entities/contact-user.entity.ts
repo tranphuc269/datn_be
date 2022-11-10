@@ -27,14 +27,6 @@ export class ContactUser {
   id: number;
 
   @Column({
-    name: 'email',
-    type: 'nvarchar',
-    length: 255,
-    charset: 'utf8',
-  })
-  email: string;
-
-  @Column({
     name: 'city',
     type: 'nvarchar',
     length: 20,

@@ -1,21 +1,28 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CreateUserDto } from '../dtos/createUser.dto';
 import { User } from '../entities/user.entity';
 import { UserRepository } from '../repositories/user.repository';
 import { Repository } from 'typeorm';
 import { RequestContext } from 'src/shared/request-context/request-context';
 import { ChangeUserInfo } from '../dtos/change-personal-info.dto';
-import { UserPersonalOutput } from '../dtos/user-personal-info-output.dto';
+import { UserPersonalOutput } from '../dtos/user-personal-output.dto';
 import { plainToInstance } from 'class-transformer';
+import { UserInput } from '../dtos/register.dto';
+import { UserPersonalInput } from '../dtos/user-personal-input.dto';
+import { UserPersonal } from '../entities/user-personal.entity';
+import { UserPersonalRepository } from '../repositories/user-personal.repository';
 @Injectable()
 export class UserService {
   constructor(
-    @InjectRepository(User) private readonly userRepository: UserRepository
+    @InjectRepository(User) private readonly userRepository: UserRepository,
+    @InjectRepository(UserPersonal)
+    private readonly userPersonalRepository: UserPersonalRepository
   ) {}
 
   async getByWorkEmail(email: string) {
-    const user = await this.userRepository.find();
+    const user = await this.userRepository.findOneBy({
+      email,
+    });
     if (user) {
       return user;
     }
@@ -25,7 +32,7 @@ export class UserService {
     );
   }
 
-  async create(userData: CreateUserDto) {
+  async create(userData: UserInput) {
     try {
       const newUser = this.userRepository.create(userData);
       await this.userRepository.save(newUser);
@@ -58,5 +65,13 @@ export class UserService {
     return plainToInstance(UserPersonalOutput, savedUser, {
       excludeExtraneousValues: true,
     });
+  }
+  async createPersonalUser(
+    ctx: RequestContext,
+    input: UserPersonalInput
+  ): Promise<UserPersonalOutput> {
+    const newUser = this.userPersonalRepository.create(input);
+    await this.userRepository.save(newUser);
+    return newUser;
   }
 }

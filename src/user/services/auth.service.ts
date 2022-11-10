@@ -1,9 +1,9 @@
-import RegisterDto from '../dtos/register.dto';
 import { UserService } from './user.service';
 import * as bcrypt from 'bcrypt';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { UserInput } from '../dtos/register.dto';
 
 @Injectable()
 export class AuthService {
@@ -12,7 +12,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService
   ) {}
-  public async register(registrationData: RegisterDto) {
+  public async register(registrationData: UserInput) {
     const hashPassword = await bcrypt.hash(registrationData.password, 10);
     try {
       const createdUser = await this.userService.create({

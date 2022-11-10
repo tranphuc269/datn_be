@@ -8,7 +8,6 @@ import {
   Res,
   Get,
 } from '@nestjs/common';
-import RegisterDto from '../dtos/register.dto';
 import RequestWithUser from '../interface/requestWithUser.interface';
 import { AuthService } from '../services/auth.service';
 import { LocalAuthenticationGuard } from '../strategies/localAuthentication.guard';
@@ -17,12 +16,13 @@ import { JwtAuthenticationGuard } from '../strategies/jwt-authentication.guard';
 import { LoginInput } from '../dtos/login-input.dto';
 import { plainToInstance } from 'class-transformer';
 import { UserTokenOutput } from '../dtos/user-token-output.dto';
+import { UserInput } from '../dtos/register.dto';
 
 @Controller('authentication')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
   @Post('register')
-  async register(@Body() registrationData: RegisterDto) {
+  async register(@Body() registrationData: UserInput) {
     return this.authService.register(registrationData);
   }
   @HttpCode(200)
