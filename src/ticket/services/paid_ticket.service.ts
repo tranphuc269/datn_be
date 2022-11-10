@@ -15,6 +15,8 @@ import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import { DetailErrorCode } from 'src/shared/constant/error-code';
 import { ErrCategoryCode, ErrDetailCode } from 'src/shared/constant/errors';
+import { PaidUpdateInput } from '../dtos/update-paid-input.dto';
+import { PaidStatusUpdateInput } from '../dtos/status-ticket-input.dto';
 @Injectable()
 export class PaidTicketService {
   constructor(
@@ -58,7 +60,7 @@ export class PaidTicketService {
   // }
   async updatePaidTicket(
     ctx: RequestContext,
-    rawInput: any,
+    rawInput: PaidUpdateInput,
     id: number
   ): Promise<PaidTicketOutput> {
     const dbTicket = await this.paidTicketRepository.findOneBy({ id });
@@ -66,17 +68,36 @@ export class PaidTicketService {
     const input = plainToInstance(CreatePaidTicketInput, rawInput, {
       excludeExtraneousValues: true,
     });
-
-    console.log(input);
     const error = await validate(input, { skipUndefinedProperties: true });
     if (error.length) {
       throw new BadRequestException(error);
     }
+    const paid = this.paidTicketRepository.merge(dbTicket, input);
+    const savedPaid = await this.paidTicketRepository.save(paid);
 
-    const brand = this.paidTicketRepository.merge(dbTicket, input);
-    const savedBrand = await this.paidTicketRepository.save(brand);
+    return plainToInstance(PaidTicketOutput, savedPaid, {
+      excludeExtraneousValues: true,
+    });
+  }
 
-    return plainToInstance(CreatePaidTicketInput, savedBrand, {
+  async updatePaidTicketStatus(
+    ctx: RequestContext,
+    status: PaidStatusUpdateInput,
+    id: number
+  ): Promise<PaidTicketOutput> {
+    const dbTicket = await this.paidTicketRepository.findOneBy({ id });
+
+    const input = plainToInstance(
+      CreatePaidTicketInput,
+      status,
+      {
+        excludeExtraneousValues: true,
+      }
+    );
+    const paid = this.paidTicketRepository.merge(dbTicket, input);
+    const savedPaid = await this.paidTicketRepository.save(paid);
+
+    return plainToInstance(PaidTicketOutput, savedPaid, {
       excludeExtraneousValues: true,
     });
   }
