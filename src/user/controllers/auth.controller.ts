@@ -17,13 +17,18 @@ import { LoginInput } from '../dtos/login-input.dto';
 import { plainToInstance } from 'class-transformer';
 import { UserTokenOutput } from '../dtos/user-token-output.dto';
 import { UserInput } from '../dtos/register.dto';
+import { ReqContext } from 'src/shared/request-context/req-context.decorator';
+import { RequestContext } from 'src/shared/request-context/request-context';
 
 @Controller('authentication')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
   @Post('register')
-  async register(@Body() registrationData: UserInput) {
-    return this.authService.register(registrationData);
+  async register(
+    @Body() registrationData: UserInput,
+    @ReqContext() ctx: RequestContext
+  ) {
+    return this.authService.register(registrationData, ctx);
   }
   @HttpCode(200)
   @Post('log-in')

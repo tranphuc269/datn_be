@@ -10,8 +10,13 @@ import { AuthService } from './services/auth.service';
 import { AuthController } from './controllers/auth.controller';
 import { JwtService } from '@nestjs/jwt';
 import { UserPersonalRepository } from './repositories/user-personal.repository';
+import { UserPersonal } from './entities/user-personal.entity';
+import { UserWork } from './entities/user-work.entity';
+import { ContactUser } from './entities/contact-user.entity';
+import { UserWorkRepository } from './repositories/user-work.repository';
+import { ContactUserRepository } from './repositories/contact-user.repository';
 @Module({
-  imports: [ConfigModule, TypeOrmModule.forFeature([User])],
+  imports: [ConfigModule, TypeOrmModule.forFeature([User, UserPersonal, UserWork, ContactUser])],
   controllers: [UserController, AuthController],
   exports: [
     JwtService,
@@ -19,12 +24,16 @@ import { UserPersonalRepository } from './repositories/user-personal.repository'
     UserRepository,
     AuthService,
     UserPersonalRepository,
+    UserWorkRepository,
+    ContactUserRepository
   ],
   providers: [
     JwtService,
     UserService,
     UserRepository,
     UserPersonalRepository,
+    UserWorkRepository,
+    ContactUserRepository,
     AuthService,
     LocalStrategy,
   ],

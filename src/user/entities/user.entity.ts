@@ -86,25 +86,25 @@ export class User {
   @OneToMany(() => OvertimeTicket, (p) => p.createPerson)
   overtimeTicketsCreate: OvertimeTicket[];
 
-  @OneToOne(() => PaidAmount, (p) => p.user)
+  @OneToOne(() => PaidAmount, (p) => p.user, { cascade: true })
   @JoinColumn({
     name: 'paid_amount',
   })
   paidAmount: PaidAmount;
 
-  @OneToOne(() => UserPersonal, (p) => p.user)
+  @OneToOne(() => UserPersonal, (p) => p.user, { cascade: true })
   @JoinColumn({
     name: 'user_personal',
   })
   userPersonalInfo: UserPersonal;
 
-  @OneToOne(() => UserWork, (p) => p.user)
+  @OneToOne(() => UserWork, (p) => p.user, { cascade: true })
   @JoinColumn({
     name: 'user_work',
   })
   userWorkInfo: UserWork;
 
-  @OneToOne(() => ContactUser, (p) => p.user)
+  @OneToOne(() => ContactUser, (p) => p.user, { cascade: true })
   @JoinColumn({
     name: 'contact_user',
   })

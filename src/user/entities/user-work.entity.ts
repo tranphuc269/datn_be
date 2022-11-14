@@ -155,6 +155,6 @@ export class UserWork {
   })
   maritalStatusId: number;
 
-  @OneToOne(() => User, (p) => p.paidAmount)
+  @OneToOne(() => User, (p) => p.userWorkInfo)
   user: User;
 }

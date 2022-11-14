@@ -73,6 +73,6 @@ export class ContactUser {
   })
   countryId: number;
 
-  @OneToOne(() => User, (p) => p.paidAmount)
+  @OneToOne(() => User, (p) => p.contactUserInfo)
   user: User;
 }

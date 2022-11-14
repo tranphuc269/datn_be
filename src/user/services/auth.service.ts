@@ -4,6 +4,10 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { UserInput } from '../dtos/register.dto';
+import { UserPersonal } from '../entities/user-personal.entity';
+import { ContactUser } from '../entities/contact-user.entity';
+import { UserWork } from '../entities/user-work.entity';
+import { RequestContext } from 'src/shared/request-context/request-context';
 
 @Injectable()
 export class AuthService {
@@ -12,13 +16,25 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService
   ) {}
-  public async register(registrationData: UserInput) {
+  public async register(registrationData: UserInput, ctx: RequestContext) {
     const hashPassword = await bcrypt.hash(registrationData.password, 10);
     try {
-      const createdUser = await this.userService.create({
-        ...registrationData,
-        password: hashPassword,
-      });
+      const userPersonal: UserPersonal = new UserPersonal();
+      const contactUser: ContactUser = new ContactUser();
+      const userWork: UserWork = new UserWork();
+      const userInfo = {
+        userPersonalInfo: userPersonal,
+        contactUserInfo: contactUser,
+        userWorkInfo: userWork,
+      };
+      const createdUser = await this.userService.create(
+        userInfo,
+        {
+          ...registrationData,
+          password: hashPassword,
+        },
+        ctx
+      );
       createdUser.password = undefined;
       return createdUser;
     } catch (error) {
@@ -58,15 +74,12 @@ export class AuthService {
       );
     }
   }
-  public async getAuthenticatedUser(
-    email: string,
-    plainTextPassword: string
-  ) {
+  public async getAuthenticatedUser(email: string, plainTextPassword: string) {
     try {
       const user = await this.userService.getByWorkEmail(email);
       await this.verifyPassword(plainTextPassword, user.password);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   }
   private async verifyPassword(
@@ -87,7 +100,7 @@ export class AuthService {
   public getCookieWithJwtToken(userId: number) {
     const payload: TokenPayload = { userId };
     const token = this.jwtService.sign(payload);
-    console.log(payload)
+    console.log(payload);
     return `Authentication=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get(
       'JWT_EXPIRATION_TIME'
     )}`;

@@ -99,6 +99,6 @@ export class UserPersonal {
   })
   maritalStatusId: number;
 
-  @OneToOne(() => User, (p) => p.paidAmount)
+  @OneToOne(() => User, (p) => p.userPersonalInfo)
   user: User;
 }

@@ -2,7 +2,6 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../entities/user.entity';
 import { UserRepository } from '../repositories/user.repository';
-import { Repository } from 'typeorm';
 import { RequestContext } from 'src/shared/request-context/request-context';
 import { ChangeUserInfo } from '../dtos/change-personal-info.dto';
 import { UserPersonalOutput } from '../dtos/user-personal-output.dto';
@@ -11,12 +10,24 @@ import { UserInput } from '../dtos/register.dto';
 import { UserPersonalInput } from '../dtos/user-personal-input.dto';
 import { UserPersonal } from '../entities/user-personal.entity';
 import { UserPersonalRepository } from '../repositories/user-personal.repository';
+import { UserWork } from '../entities/user-work.entity';
+import { UserWorkRepository } from '../repositories/user-work.repository';
+import { ContactUser } from '../entities/contact-user.entity';
+import { UserWorkInput } from '../dtos/user-work-input.dto';
+import { UserWorkOutput } from '../dtos/user-work-output.dto';
+import { ContactUserInput } from '../dtos/contact-user-input.dto';
+import { ContactUserOutput } from '../dtos/contact-user-output.dto';
+import { ContactUserRepository } from '../repositories/contact-user.repository';
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User) private readonly userRepository: UserRepository,
     @InjectRepository(UserPersonal)
-    private readonly userPersonalRepository: UserPersonalRepository
+    private readonly userPersonalRepository: UserPersonalRepository,
+    @InjectRepository(UserWork)
+    private readonly userWorkRepository: UserWorkRepository,
+    @InjectRepository(ContactUser)
+    private readonly contactUserRepository: ContactUserRepository
   ) {}
 
   async getByWorkEmail(email: string) {
@@ -32,9 +43,15 @@ export class UserService {
     );
   }
 
-  async create(userData: UserInput) {
+  async create(userInfo: any, userData: UserInput, ctx: RequestContext) {
     try {
       const newUser = this.userRepository.create(userData);
+      const newUserPersonal = this.createPersonalUser(
+        ctx,
+        userInfo.userPersonal
+      );
+      let personalId = (await newUserPersonal).id;
+
       await this.userRepository.save(newUser);
       return newUser;
     } catch (error) {
@@ -71,7 +88,23 @@ export class UserService {
     input: UserPersonalInput
   ): Promise<UserPersonalOutput> {
     const newUser = this.userPersonalRepository.create(input);
-    await this.userRepository.save(newUser);
+    await this.userPersonalRepository.save(newUser);
     return newUser;
+  }
+  async createWorkUser(
+    ctx: RequestContext,
+    input: UserWorkInput
+  ): Promise<UserWorkOutput> {
+    const newUser = this.userWorkRepository.create(input);
+    await this.userWorkRepository.save(newUser);
+    return;
+  }
+  async createContactUser(
+    ctx: RequestContext,
+    input: ContactUserInput
+  ): Promise<ContactUserOutput> {
+    const newUser = this.userWorkRepository.create(input);
+    await this.userWorkRepository.save(newUser);
+    return;
   }
 }
