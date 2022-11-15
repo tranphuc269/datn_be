@@ -1,4 +1,9 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../entities/user.entity';
 import { UserRepository } from '../repositories/user.repository';
@@ -45,15 +50,31 @@ export class UserService {
 
   async create(userInfo: any, userData: UserInput, ctx: RequestContext) {
     try {
+      const existUser = await this.userRepository.findBy({
+        email: userData.email,
+      });
+      if (existUser.length > 0) {
+        throw new NotFoundException(`Email exist`);
+      }
       const newUser = this.userRepository.create(userData);
-      const newUserPersonal = this.createPersonalUser(
-        ctx,
-        userInfo.userPersonal
-      );
-      let personalId = (await newUserPersonal).id;
 
-      await this.userRepository.save(newUser);
-      return newUser;
+      const newUserPersonal = this.userPersonalRepository.create(
+        userInfo.userPersonal as UserPersonal
+      );
+      const savedUserPersonal = await this.userPersonalRepository.save(
+        newUserPersonal
+      );
+
+      const newUserWork = this.userWorkRepository.create(
+        userInfo.userWorkInfo as UserWork
+      );
+      const savedUserWork = await this.userWorkRepository.save(newUserWork);
+
+      newUser.userPersonal = savedUserPersonal.id;
+      newUser.userWork = savedUserWork.id;
+
+      const savedUser = await this.userRepository.save(newUser);
+      return savedUser;
     } catch (error) {
       console.log(error);
     }
@@ -88,23 +109,23 @@ export class UserService {
     input: UserPersonalInput
   ): Promise<UserPersonalOutput> {
     const newUser = this.userPersonalRepository.create(input);
-    await this.userPersonalRepository.save(newUser);
-    return newUser;
+    let saveUser = await this.userPersonalRepository.save(newUser);
+    return saveUser;
   }
   async createWorkUser(
     ctx: RequestContext,
     input: UserWorkInput
   ): Promise<UserWorkOutput> {
     const newUser = this.userWorkRepository.create(input);
-    await this.userWorkRepository.save(newUser);
-    return;
+    let saveUser = await this.userWorkRepository.save(newUser);
+    return saveUser;
   }
   async createContactUser(
     ctx: RequestContext,
     input: ContactUserInput
   ): Promise<ContactUserOutput> {
-    const newUser = this.userWorkRepository.create(input);
-    await this.userWorkRepository.save(newUser);
+    const newUser = this.contactUserRepository.create();
+    await this.contactUserRepository.save(newUser);
     return;
   }
 }

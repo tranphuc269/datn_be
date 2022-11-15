@@ -11,11 +11,4 @@ export class ContactUserRepository extends Repository<ContactUser> {
     }
     return entity;
   }
-  //   async getByEmail(email: string): Promise<ContactUser> {
-  //     const entity = await this.findOne({ email });
-  //     if (!entity) {
-  //       throw new NotFoundException(` not found`);
-  //     }
-  //     return entity;
-  //   }
 }

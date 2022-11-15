@@ -31,6 +31,7 @@ export class UserWork {
     type: 'nvarchar',
     length: 255,
     charset: 'utf8',
+    nullable: true,
   })
   workEmail: string;
   
@@ -94,6 +95,7 @@ export class UserWork {
     type: 'nvarchar',
     length: 20,
     charset: 'utf8',
+    nullable: true,
   })
   identificationIdObj: string;
 
@@ -105,55 +107,6 @@ export class UserWork {
     nullable: true,
   })
   passportObj: string;
-
-  @Column({
-    name: 'phone_number',
-    type: 'nvarchar',
-    length: 20,
-    charset: 'utf8',
-  })
-  phoneNumber: string;
-  
-  @Column({
-    name: 'company_name',
-    type: 'nvarchar',
-    length: 20,
-    charset: 'utf8',
-  })
-  companyName: string;
-
-  @Column({
-    name: 'gender',
-    type: 'tinyint',
-  })
-  gender: number;
-
-  @Column({
-    name: 'national_id',
-    type: 'int',
-  })
-  nationalId: number;
-
-  @Column({
-    name: 'religion_id',
-    type: 'int',
-    nullable: true,
-  })
-  religionId: number;
-
-  @Column({
-    name: 'ethnicity_id',
-    type: 'int',
-    nullable: true,
-  })
-  ethnicityId: number;
-
-  @Column({
-    name: 'marital_status_id',
-    type: 'int',
-    nullable: true,
-  })
-  maritalStatusId: number;
 
   @OneToOne(() => User, (p) => p.userWorkInfo)
   user: User;

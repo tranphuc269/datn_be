@@ -6,18 +6,38 @@ export class UserWorkInput {
   @ApiProperty()
   @Expose()
   @IsNotEmpty()
-  firstName: string;
+  workEmail: string;
 
   @IsNotEmpty()
   @ApiProperty()
   @Expose()
-  lastName: string;
+  taxNumber: string;
 
   @IsNotEmpty()
   @ApiProperty()
   @Expose()
-  birthday: Date;
+  joinDate: Date;
+  
+  @IsNotEmpty()
+  @ApiProperty()
+  @Expose()
+  endDate: Date;
+  
+  @IsNotEmpty()
+  @ApiProperty()
+  @Expose()
+  bhytDate: Date;
 
+  @IsNotEmpty()
+  @ApiProperty()
+  @Expose()
+  healthInsuranceNumber: string;
+  
+  @IsNotEmpty()
+  @ApiProperty()
+  @Expose()
+  healthInsurancePlace: string;
+  
   @IsNotEmpty()
   @ApiProperty()
   @Expose()
@@ -27,29 +47,4 @@ export class UserWorkInput {
   @ApiProperty()
   @Expose()
   passportObj: string;
-
-  @IsNotEmpty()
-  @ApiProperty()
-  @Expose()
-  gender: number;
-
-  @IsNotEmpty()
-  @ApiProperty()
-  @Expose()
-  nationalId: number;
-
-  @IsNotEmpty()
-  @ApiProperty()
-  @Expose()
-  religionId: number;
-
-  @IsNotEmpty()
-  @ApiProperty()
-  @Expose()
-  ethnicityId: number;
-
-  @IsNotEmpty()
-  @ApiProperty()
-  @Expose()
-  maritalStatusId: number;
 }

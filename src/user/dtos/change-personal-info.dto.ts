@@ -4,6 +4,10 @@ import { IsOptional } from 'class-validator';
 export class ChangeUserInfo {
   @ApiPropertyOptional()
   @Expose()
+  id?: number;
+
+  @ApiPropertyOptional()
+  @Expose()
   @IsOptional()
   firstName?: string;
 
@@ -31,7 +35,7 @@ export class ChangeUserInfo {
   @Expose()
   @IsOptional()
   nationalId?: number;
-  
+
   @ApiPropertyOptional()
   @Expose()
   @IsOptional()

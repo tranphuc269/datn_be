@@ -8,41 +8,37 @@ export class UserWorkOutput {
   
   @ApiProperty()
   @Expose()
-  firstName: string;
+  workEmail: string;
 
   @ApiProperty()
   @Expose()
-  lastName: string;
+  taxNumber: string;
 
   @ApiProperty()
   @Expose()
-  birthday: Date;
+  joinDate: Date;
+  
+  @ApiProperty()
+  @Expose()
+  endDate: Date;
+  
+  @ApiProperty()
+  @Expose()
+  bhytDate: Date;
 
+  @ApiProperty()
+  @Expose()
+  healthInsuranceNumber: string;
+  
+  @ApiProperty()
+  @Expose()
+  healthInsurancePlace: string;
+  
   @ApiProperty()
   @Expose()
   identificationIdObj: string;
-
+  
   @ApiProperty()
   @Expose()
   passportObj: string;
-
-  @ApiProperty()
-  @Expose()
-  gender: number;
-
-  @ApiProperty()
-  @Expose()
-  nationalId: number;
-
-  @ApiProperty()
-  @Expose()
-  religionId: number;
-
-  @ApiProperty()
-  @Expose()
-  ethnicityId: number;
-
-  @ApiProperty()
-  @Expose()
-  maritalStatusId: number;
 }

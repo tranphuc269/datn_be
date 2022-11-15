@@ -8,6 +8,7 @@ import { UserPersonal } from '../entities/user-personal.entity';
 import { ContactUser } from '../entities/contact-user.entity';
 import { UserWork } from '../entities/user-work.entity';
 import { RequestContext } from 'src/shared/request-context/request-context';
+import { UserWorkInput } from '../dtos/user-work-input.dto';
 
 @Injectable()
 export class AuthService {
@@ -22,6 +23,7 @@ export class AuthService {
       const userPersonal: UserPersonal = new UserPersonal();
       const contactUser: ContactUser = new ContactUser();
       const userWork: UserWork = new UserWork();
+      userWork.joinDate = new Date();
       const userInfo = {
         userPersonalInfo: userPersonal,
         contactUserInfo: contactUser,

@@ -31,6 +31,7 @@ export class UserPersonal {
     type: 'nvarchar',
     length: 50,
     charset: 'utf8',
+    nullable: true,
   })
   firstName: string;
 
@@ -39,6 +40,7 @@ export class UserPersonal {
     type: 'nvarchar',
     length: 50,
     charset: 'utf8',
+    nullable: true,
   })
   lastName: string;
 
@@ -54,6 +56,7 @@ export class UserPersonal {
     type: 'nvarchar',
     length: 20,
     charset: 'utf8',
+    nullable: true,
   })
   identificationIdObj: string;
 
@@ -69,12 +72,14 @@ export class UserPersonal {
   @Column({
     name: 'gender',
     type: 'tinyint',
+    nullable: true,
   })
   gender: number;
 
   @Column({
     name: 'national_id',
     type: 'int',
+    nullable: true,
   })
   nationalId: number;
 

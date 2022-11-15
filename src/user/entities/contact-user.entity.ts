@@ -31,6 +31,7 @@ export class ContactUser {
     type: 'nvarchar',
     length: 20,
     charset: 'utf8',
+    nullable: true,
   })
   city: string;
 
@@ -39,6 +40,7 @@ export class ContactUser {
     type: 'nvarchar',
     length: 20,
     charset: 'utf8',
+    nullable: true,
   })
   state: string;
 
@@ -47,6 +49,7 @@ export class ContactUser {
     type: 'nvarchar',
     length: 20,
     charset: 'utf8',
+    nullable: true,
   })
   address1: string;
 
@@ -55,6 +58,7 @@ export class ContactUser {
     type: 'nvarchar',
     length: 20,
     charset: 'utf8',
+    nullable: true,
   })
   address2: string;
 
@@ -63,6 +67,7 @@ export class ContactUser {
     type: 'nvarchar',
     length: 20,
     charset: 'utf8',
+    nullable: true,
   })
   phoneNumber: string;
 
@@ -70,6 +75,7 @@ export class ContactUser {
   @Column({
     name: 'country_id',
     type: 'int',
+    nullable: true,
   })
   countryId: number;
 

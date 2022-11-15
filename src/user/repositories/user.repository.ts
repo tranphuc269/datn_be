@@ -12,11 +12,9 @@ export class UserRepository extends Repository<User> {
     }
     return entity;
   }
-//   async getByEmail(email: string): Promise<ContactUser> {
-//     const entity = await this.findOne({ email });
-//     if (!entity) {
-//       throw new NotFoundException(` not found`);
-//     }
-//     return entity;
-//   }
+  async getByEmail(email: string): Promise<User> {
+    const entity = await this.find({ [email]: email });
+    console.log(entity);
+    return;
+  }
 }
