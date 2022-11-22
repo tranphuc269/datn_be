@@ -1,32 +1,44 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
 
-export class ContactUserOutput {
+export class TimeKeepingOutput {
   @ApiProperty()
   @Expose()
   id: number;
-  
-  @ApiProperty()
-  @Expose()
-  city: string;
 
   @ApiProperty()
   @Expose()
-  state: string;
+  userId?: number;
 
   @ApiProperty()
   @Expose()
-  address1: string;
+  createDate?: Date;
 
   @ApiProperty()
   @Expose()
-  address2: string;
+  morningJoin?: Date;
 
   @ApiProperty()
   @Expose()
-  phoneNumber: string;
+  morningLeave?: Date;
 
   @ApiProperty()
   @Expose()
-  countryId: number;
+  afternoonJoin?: Date;
+
+  @ApiProperty()
+  @Expose()
+  afternoonLeave?: Date;
+
+  @ApiProperty()
+  @Expose()
+  oddTime: number;
+
+  @ApiProperty()
+  @Expose()
+  workAmountId: number;
+
+  @ApiProperty()
+  @Expose()
+  workTypeId: number;
 }

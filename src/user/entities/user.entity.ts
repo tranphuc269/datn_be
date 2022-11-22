@@ -58,20 +58,23 @@ export class User {
   })
   password: string;
 
-
   @Column({
     name: 'user_personal',
-    type: 'int'
+    type: 'int',
   })
   userPersonal: number;
 
   @Column({
     name: 'user_work',
-    type: 'int'
+    type: 'int',
   })
   userWork: number;
 
-  
+  @Column({
+    name: 'contact_user',
+    type: 'int',
+  })
+  contactUser: number;
 
   @CreateDateColumn({
     name: 'created_at',

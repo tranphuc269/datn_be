@@ -3,7 +3,6 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserController } from './controllers/user.controller';
-import { UserService } from './services/user.service';
 import { UserRepository } from './repositories/user.repository';
 import { LocalStrategy } from './strategies/local.strategy';
 import { AuthService } from './services/auth.service';
@@ -15,8 +14,9 @@ import { UserWork } from './entities/user-work.entity';
 import { ContactUser } from './entities/contact-user.entity';
 import { UserWorkRepository } from './repositories/user-work.repository';
 import { ContactUserRepository } from './repositories/contact-user.repository';
+import { UserService } from './services/user.service.spec';
 @Module({
-  imports: [ConfigModule, TypeOrmModule.forFeature([User, UserPersonal, UserWork, ContactUser])],
+  imports: [ConfigModule, TypeOrmModule.forFeature([User, UserPersonal, UserWork, ContactUser, UserPersonalRepository])],
   controllers: [UserController, AuthController],
   exports: [
     JwtService,

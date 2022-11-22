@@ -2,34 +2,45 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
 import { IsEnum, IsNotEmpty, IsOptional } from 'class-validator';
 
-export class ContactUserInput {
+export class TimeKeepingInput {
   @ApiProperty()
   @Expose()
   @IsNotEmpty()
-  city: string;
+  userId: number;
 
   @IsNotEmpty()
   @ApiProperty()
   @Expose()
-  state: string;
-
-  @IsNotEmpty()
+  createDate: Date;
+  
   @ApiProperty()
   @Expose()
-  address1: string;
-
-  @IsNotEmpty()
+  morningJoin?: Date;
+  
   @ApiProperty()
   @Expose()
-  address2: string;
+  morningLeave?: Date;
+  
+  @ApiProperty()
+  @Expose()
+  afternoonJoin?: Date;
+  
+  @ApiProperty()
+  @Expose()
+  afternoonLeave?: Date;
   
   @IsNotEmpty()
   @ApiProperty()
   @Expose()
-  phoneNumber: string;
+  oddTime: number;
 
   @IsNotEmpty()
   @ApiProperty()
   @Expose()
-  countryId: number;
+  workAmountId: number;
+  
+  @IsNotEmpty()
+  @ApiProperty()
+  @Expose()
+  workTypeId: number;
 }

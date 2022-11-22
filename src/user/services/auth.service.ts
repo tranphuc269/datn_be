@@ -1,4 +1,3 @@
-import { UserService } from './user.service';
 import * as bcrypt from 'bcrypt';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
@@ -9,6 +8,7 @@ import { ContactUser } from '../entities/contact-user.entity';
 import { UserWork } from '../entities/user-work.entity';
 import { RequestContext } from 'src/shared/request-context/request-context';
 import { UserWorkInput } from '../dtos/user-work-input.dto';
+import { UserService } from './user.service.spec';
 
 @Injectable()
 export class AuthService {

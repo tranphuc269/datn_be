@@ -23,6 +23,8 @@ import { UserWorkOutput } from '../dtos/user-work-output.dto';
 import { ContactUserInput } from '../dtos/contact-user-input.dto';
 import { ContactUserOutput } from '../dtos/contact-user-output.dto';
 import { ContactUserRepository } from '../repositories/contact-user.repository';
+import { ChangeUserWorkInfo } from '../dtos/change-work-info.dto';
+import { ChangeContactUserInfo } from '../dtos/change-contact-user.dto';
 @Injectable()
 export class UserService {
   constructor(
@@ -70,8 +72,16 @@ export class UserService {
       );
       const savedUserWork = await this.userWorkRepository.save(newUserWork);
 
+      const newUserContact = this.contactUserRepository.create(
+        userInfo.contactUser as ContactUser
+      );
+      const savedUserContact = await this.contactUserRepository.save(
+        newUserContact
+      );
+
       newUser.userPersonal = savedUserPersonal.id;
       newUser.userWork = savedUserWork.id;
+      newUser.contactUser = savedUserContact.id;
 
       const savedUser = await this.userRepository.save(newUser);
       return savedUser;
@@ -96,14 +106,49 @@ export class UserService {
     ctx: RequestContext,
     input: ChangeUserInfo
   ): Promise<UserPersonalOutput> {
-    const user = await this.userRepository.getById(ctx.user.id);
-    this.userRepository.merge(user);
+    let userId = input.id;
+    const user = await this.userPersonalRepository.findOneBy({ id: userId });
+    this.userPersonalRepository.merge(user, input);
 
-    const savedUser = await this.userRepository.save(user);
+    const savedUser = await this.userPersonalRepository.save(user);
     return plainToInstance(UserPersonalOutput, savedUser, {
       excludeExtraneousValues: true,
     });
   }
+  async updateWorkUser(
+    ctx: RequestContext,
+    input: ChangeUserWorkInfo
+  ): Promise<UserWorkOutput> {
+    let userId = input.id;
+    const user = await this.userWorkRepository.findOneBy({ id: userId });
+    this.userWorkRepository.merge(user, input);
+
+    const savedUser = await this.userWorkRepository.save(user);
+    return plainToInstance(UserWorkOutput, savedUser, {
+      excludeExtraneousValues: true,
+    });
+  }
+  
+  async updateContactUser(
+    ctx: RequestContext,
+    input: ChangeContactUserInfo
+  ): Promise<ContactUserOutput> {
+    let userId = input.id;
+    const user = await this.contactUserRepository.findOneBy({ id: userId });
+    this.contactUserRepository.merge(user, input);
+
+    const savedUser = await this.contactUserRepository.save(user);
+    return plainToInstance(ContactUserOutput, savedUser, {
+      excludeExtraneousValues: true,
+    });
+  }
+
+
+
+
+
+
+
   async createPersonalUser(
     ctx: RequestContext,
     input: UserPersonalInput

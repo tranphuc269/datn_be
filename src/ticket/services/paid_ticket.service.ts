@@ -66,8 +66,6 @@ export class PaidTicketService {
     const input = plainToInstance(CreatePaidTicketInput, rawInput, {
       excludeExtraneousValues: true,
     });
-
-    console.log(input);
     const error = await validate(input, { skipUndefinedProperties: true });
     if (error.length) {
       throw new BadRequestException(error);
