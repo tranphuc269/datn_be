@@ -64,12 +64,6 @@ export class SupplementTicket {
   reason: string;
 
   @Column({
-    name: 'paid_type_id',
-    type: 'int',
-  })
-  typePaidId: number;
-
-  @Column({
     name: 'is_ot',
     type: 'tinyint',
   })

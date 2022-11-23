@@ -5,36 +5,33 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Not, Repository } from 'typeorm';
-import { PaidTicketOutput } from '../dtos/create-paid-output.dto';
-import { CreatePaidTicketInput } from '../dtos/create-paid-input.dto';
-import { PaidTicket } from '../entities/paid_ticket.entity';
-import { PaidTicketRepository } from '../repositories/paid_ticket.repository';
 import { RequestContext } from '../../shared/request-context/request-context';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
-import { DetailErrorCode } from 'src/shared/constant/error-code';
-import { ErrCategoryCode, ErrDetailCode } from 'src/shared/constant/errors';
 import { TimeKeepingService } from '../../time_keeping/services/time_keeping.service';
 import { TimeKeepingInput } from 'src/time_keeping/dtos/timekeeping-input.dto';
-import { UpdatePaidInput } from '../dtos/update-paid-input.dto';
+import { SupplementTicketRepository } from '../repositories/supplement_ticket.repository';
+import { SupplementTicket } from '../entities/supplement_ticket.entity';
+import { CreateSupplementTicketInput } from '../dtos/create-supplement-input.dto';
+import { SupplementTicketOutput } from '../dtos/create-supplement-output.dto';
+import { UpdateSupplementInput } from '../dtos/update-supplement-input.dto';
 @Injectable()
-export class PaidTicketService {
+export class SupplementTicketService {
   constructor(
     private readonly timeKeepingService: TimeKeepingService,
-    @InjectRepository(PaidTicket)
-    private readonly paidTicketRepository: PaidTicketRepository
+    @InjectRepository(SupplementTicket)
+    private readonly supplementTicketRepository: SupplementTicketRepository
   ) {}
-  async createPaidTicket(
+  async createSupplementTicket(
     ctx: RequestContext,
-    paidTicketDto: CreatePaidTicketInput
+    paidTicketDto: CreateSupplementTicketInput
   ) {
     try {
-      const newPaidTicket = plainToInstance(PaidTicket, {
+      const newSupplementTicket = plainToInstance(SupplementTicket, {
         ...paidTicketDto,
       });
-      const saveTicket = this.paidTicketRepository.save(newPaidTicket);
-      return plainToInstance(PaidTicketOutput, saveTicket, {
+      const saveTicket = this.supplementTicketRepository.save(newSupplementTicket);
+      return plainToInstance(SupplementTicketOutput, saveTicket, {
         excludeExtraneousValues: true,
       });
     } catch (error) {
@@ -42,22 +39,22 @@ export class PaidTicketService {
       throw new HttpException('Error', HttpStatus.BAD_REQUEST);
     }
   }
-  async getPaidTicketById(id: number) {
+  async getSupplementTicketById(id: number) {
     try {
-      const paidTicket = this.paidTicketRepository.findOneBy({ id });
+      const paidTicket = this.supplementTicketRepository.findOneBy({ id });
       return paidTicket;
     } catch (error) {
       throw new HttpException('Error', HttpStatus.BAD_REQUEST);
     }
   }
-  async updatePaidTicket(
+  async updateSupplementTicket(
     ctx: RequestContext,
-    rawInput: UpdatePaidInput,
+    rawInput: UpdateSupplementInput,
     id: number
-  ): Promise<PaidTicketOutput> {
-    const dbTicket = await this.paidTicketRepository.findOneBy({ id });
+  ): Promise<SupplementTicketOutput> {
+    const dbTicket = await this.supplementTicketRepository.findOneBy({ id });
 
-    const input = plainToInstance(CreatePaidTicketInput, rawInput, {
+    const input = plainToInstance(CreateSupplementTicketInput, rawInput, {
       excludeExtraneousValues: true,
     });
     const error = await validate(input, { skipUndefinedProperties: true });
@@ -65,7 +62,7 @@ export class PaidTicketService {
       throw new BadRequestException(error);
     }
 
-    const brand = this.paidTicketRepository.merge(dbTicket, input);
+    const brand = this.supplementTicketRepository.merge(dbTicket, input);
     if (input.ticketStatusId === 2) {
       let newRecordTimeKeeping = new TimeKeepingInput();
       newRecordTimeKeeping.userId = rawInput.createPersonId;
@@ -77,29 +74,29 @@ export class PaidTicketService {
         newRecordTimeKeeping
       );
     }
-    const savedBrand = await this.paidTicketRepository.save(brand);
+    const savedBrand = await this.supplementTicketRepository.save(brand);
 
-    return plainToInstance(CreatePaidTicketInput, savedBrand, {
+    return plainToInstance(CreateSupplementTicketInput, savedBrand, {
       excludeExtraneousValues: true,
     });
   }
-  async getAllPaidTicket(ctx: RequestContext, userId: number) {
+  async getAllSupplementTicket(ctx: RequestContext, userId: number) {
     try {
-      const myPaidTickets = await this.paidTicketRepository.findBy({
+      const mySupplementTickets = await this.supplementTicketRepository.findBy({
         createPersonId: userId,
       });
-      return myPaidTickets;
+      return mySupplementTickets;
     } catch (error) {
       console.log(error);
     }
   }
-  async getPaidTicketByStatus(
+  async getSupplementTicketByStatus(
     ctx: RequestContext,
     userId: number,
     statusId: number
   ) {
     try {
-      const myPaidTickets = await this.paidTicketRepository
+      const mySupplementTickets = await this.supplementTicketRepository
         .createQueryBuilder('paid_tickets')
         .where('paid_tickets.create_person_id =:userId', {
           userId,
@@ -107,7 +104,7 @@ export class PaidTicketService {
         .andWhere('paid_tickets.ticket_status_id =:statusId', {
           statusId,
         });
-      return myPaidTickets.getMany();
+      return mySupplementTickets.getMany();
     } catch (error) {
       console.log(error);
     }

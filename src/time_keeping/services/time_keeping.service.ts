@@ -42,6 +42,7 @@ export class TimeKeepingService {
       updateData.workAmountId = input.workAmountId;
       updateData.workTypeId = input.workTypeId;
       this.updateRecordTimeKeeping(ctx, updateData);
+      return;
     }
     const newRecord = this.timeKeepingRepository.create(input);
     const saveRecord = await this.timeKeepingRepository.save(newRecord);

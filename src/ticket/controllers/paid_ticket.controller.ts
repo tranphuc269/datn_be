@@ -14,6 +14,7 @@ import { ReqContext } from '../../shared/request-context/req-context.decorator';
 import { RequestContext } from '../../shared/request-context/request-context';
 import { CreatePaidTicketInput } from '../dtos/create-paid-input.dto';
 import { PaidTicketOutput } from '../dtos/create-paid-output.dto';
+import { UpdatePaidInput } from '../dtos/update-paid-input.dto';
 import { PaidTicketService } from '../services/paid_ticket.service';
 @Controller('paid_tickets')
 @ApiTags('paid_tickets')
@@ -39,14 +40,33 @@ export class PaidTicketController {
   @HttpCode(HttpStatus.OK)
   async updateTicket(
     @ReqContext() ctx: RequestContext,
-    @Body() input: any,
+    @Body() input: UpdatePaidInput,
     @Param('id') id: number
   ): Promise<BaseApiResponse<PaidTicketOutput>> {
     const data = await this.paidTicketService.updatePaidTicket(ctx, input, id);
     return { data };
   }
-  // @Post('update-paid')
-  // async updatePaidTicket(@Body() id: number, input: CreatePaidTicketInput) {
-  //   return this.paidTicketService.updatePaidTicket(id, input);
-  // }
+
+  @Get('my-paid:id')
+  async getAllMyPaidTicket(
+    @ReqContext() ctx: RequestContext,
+    @Param('id') userId: number
+  ): Promise<BaseApiResponse<PaidTicketOutput[]>> {
+    const data = await this.paidTicketService.getAllPaidTicket(ctx, userId);
+    return { data };
+  }
+
+  @Get('paid-status:status_id:id')
+  async getMyPaidTicketByStatus(
+    @ReqContext() ctx: RequestContext,
+    @Param('id') userId: number,
+    @Param('status_id') statusId: number
+  ): Promise<BaseApiResponse<PaidTicketOutput[]>> {
+    const data = await this.paidTicketService.getPaidTicketByStatus(
+      ctx,
+      userId,
+      statusId
+    );
+    return { data };
+  }
 }
