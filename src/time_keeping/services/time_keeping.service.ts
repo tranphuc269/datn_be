@@ -8,6 +8,7 @@ import { TimeKeepingOutput } from '../dtos/timekeeping-output.dto';
 import { TimeKeepingUpdateInput } from '../dtos/update-timekeeping-input.dto';
 import { TimeKeeping } from '../entities/time_keeping.entity';
 import { TimeKeepingRepository } from '../repositories/time_keeping.repository';
+import * as moment from 'moment';
 @Injectable()
 export class TimeKeepingService {
   constructor(
@@ -59,4 +60,28 @@ export class TimeKeepingService {
       exposeDefaultValues: true,
     });
   }
+  async getRecordByMonthAndUserId(
+    ctx: RequestContext,
+    userId: number,
+    month: string
+  ): Promise<TimeKeepingOutput[]> {
+    let date = new Date(month + '-01');
+    let startDate = moment(date).startOf('month').format('YYYY-MM-DD');
+    let endDate = moment(date).endOf('month').format('YYYY-MM-DD');
+    const listRecord = await this.timeKeepingRepository
+      .createQueryBuilder('time_keepings')
+      .where('time_keepings.user_id =:userId', {
+        userId: userId,
+      })
+      .andWhere(
+        'CAST(time_keepings.create_date as DATE) between :startDate and :endDate',
+        {
+          startDate: startDate,
+          endDate: endDate,
+        }
+      )
+      .getMany();
+    return listRecord;
+  }
+  
 }

@@ -27,7 +27,6 @@ import { TicketModule } from './ticket/ticket.module';
         synchronize: false,
         autoLoadEntities: true,
         migration: [__dirname + '/migrations/*{.ts,.js}'],
-        logging: true
       }),
     }),
   ],
@@ -35,4 +34,3 @@ import { TicketModule } from './ticket/ticket.module';
   providers: [AppService],
 })
 export class AppModule {}
-

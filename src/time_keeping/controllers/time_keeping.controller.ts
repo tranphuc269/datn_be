@@ -1,8 +1,10 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { BaseApiResponse } from 'src/shared/dtos/base-api-response.dto';
 import { ReqContext } from 'src/shared/request-context/req-context.decorator';
 import { RequestContext } from 'src/shared/request-context/request-context';
 import { TimeKeepingInput } from '../dtos/timekeeping-input.dto';
+import { TimeKeepingOutput } from '../dtos/timekeeping-output.dto';
 import { TimeKeepingUpdateInput } from '../dtos/update-timekeeping-input.dto';
 import { TimeKeepingService } from '../services/time_keeping.service';
 @Controller('time_keepings')
@@ -35,6 +37,20 @@ export class TimeKeepingController {
     const data = await this.timeKeepingService.updateRecordTimeKeeping(
       ctx,
       input
+    );
+    return { data };
+  }
+
+  @Get('month-timekeeping/:id/:month')
+  async getRecordByMonthAndUserId(
+    @ReqContext() ctx: RequestContext,
+    @Param('id') userId: number,
+    @Param('month') month: string
+  ): Promise<BaseApiResponse<TimeKeepingOutput[]>> {
+    const data = await this.timeKeepingService.getRecordByMonthAndUserId(
+      ctx,
+      userId,
+      month
     );
     return { data };
   }
