@@ -1,14 +1,21 @@
-import { TimeKeeping } from '../../time_keeping/entities/time_keeping.entity';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
+  JoinTable,
+  ManyToMany,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { PaidTicket } from './paid_ticket.entity';
+import { TimeKeeping } from '../../time_keeping/entities/time_keeping.entity';
+import { PaidTicket } from '../../ticket/entities/paid_ticket.entity';
+import { PaidAmount } from '../../ticket/entities/paid_amount.entity';
+import { SupplementTicket } from '../../ticket/entities/supplement_ticket.entity';
+import { OvertimeTicket } from '../../ticket/entities/overtime_ticket.entity';
 
 @Entity('users')
 export class User {
@@ -59,7 +66,7 @@ export class User {
   @Column({
     name: 'birthday',
     type: 'datetime',
-    nullable: true
+    nullable: true,
   })
   birthday: Date;
 
@@ -76,7 +83,7 @@ export class User {
     type: 'nvarchar',
     length: 20,
     charset: 'utf8',
-    nullable: true
+    nullable: true,
   })
   passportObj: string;
 
@@ -127,7 +134,21 @@ export class User {
   @OneToMany(() => PaidTicket, (p) => p.user)
   paidTickets: PaidTicket[];
 
+  @OneToMany(() => SupplementTicket, (p) => p.user)
+  supplementTickets: SupplementTicket[];
+
   @OneToMany(() => TimeKeeping, (p) => p.user)
   timeKeepings: TimeKeeping[];
-}
 
+  @OneToMany(() => OvertimeTicket, (p) => p.createPerson)
+  overtimeTicketsCreate: OvertimeTicket[];
+
+  @OneToOne(() => PaidAmount, (p) => p.user)
+  @JoinColumn({
+    name: 'paid_amount',
+  })
+  paidAmount: PaidAmount;
+
+  @ManyToMany(() => OvertimeTicket, (p) => p, { cascade: true })
+  overtimeTickets: OvertimeTicket[];
+}
