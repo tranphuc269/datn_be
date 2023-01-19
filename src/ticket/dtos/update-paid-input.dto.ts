@@ -1,49 +1,59 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { Expose } from 'class-transformer';
-import { IsEnum, IsNotEmpty, IsOptional } from 'class-validator';
+import { ApiPropertyOptional } from '@nestjs/swagger';
+import {
+  IsArray,
+  IsInt,
+  IsNumber,
+  IsObject,
+  IsOptional,
+  IsUrl,
+  ValidateNested,
+} from 'class-validator';
+import { Expose, Type } from 'class-transformer';
 
-export class UpdatePaidInput {
-  @ApiProperty()
-  @Expose()
-  @IsNotEmpty()
-  createPersonId: number;
+export class PaidUpdateInput {
 
-  @IsNotEmpty()
-  @ApiProperty()
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsNumber()
   @Expose()
-  relatedPersonId: number;
-  
-  @IsNotEmpty()
-  @ApiProperty()
-  @Expose()
-  approverPersonId: number;
-  
-  @IsNotEmpty()
-  @ApiProperty()
-  @Expose()
-  substitutePersonId: number;
-  
-  @ApiProperty()
-  @Expose()
-  ticketStatusId: number;
-  
-  @IsNotEmpty()
-  @ApiProperty()
-  @Expose()
-  startTime: Date;
-  
-  @IsNotEmpty()
-  @ApiProperty()
-  @Expose()
-  endTime: Date;
+  relatedPersonId?: number;
 
-  @IsNotEmpty()
-  @ApiProperty()
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsNumber()
   @Expose()
-  reason: string;
-  
-  @IsNotEmpty()
-  @ApiProperty()
+  approverPersonId?: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsNumber()
   @Expose()
-  typePaidId: number;
+  substitutePersonId?: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsNumber()
+  @Expose()
+  ticketStatusId?: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  startTime?: Date;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  endTime?: Date;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Expose()
+  reason?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsNumber()
+  @Expose()
+  typePaidId?: number;
 }

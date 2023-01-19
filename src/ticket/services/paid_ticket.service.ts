@@ -17,7 +17,8 @@ import { DetailErrorCode } from 'src/shared/constant/error-code';
 import { ErrCategoryCode, ErrDetailCode } from 'src/shared/constant/errors';
 import { TimeKeepingService } from '../../time_keeping/services/time_keeping.service';
 import { TimeKeepingInput } from 'src/time_keeping/dtos/timekeeping-input.dto';
-import { UpdatePaidInput } from '../dtos/update-paid-input.dto';
+import { PaidUpdateInput } from '../dtos/update-paid-input.dto';
+import { PaidStatusUpdateInput } from '../dtos/status-ticket-input.dto';
 @Injectable()
 export class PaidTicketService {
   constructor(
@@ -52,7 +53,7 @@ export class PaidTicketService {
   }
   async updatePaidTicket(
     ctx: RequestContext,
-    rawInput: UpdatePaidInput,
+    rawInput: PaidUpdateInput,
     id: number
   ): Promise<PaidTicketOutput> {
     const dbTicket = await this.paidTicketRepository.findOneBy({ id });
@@ -64,22 +65,32 @@ export class PaidTicketService {
     if (error.length) {
       throw new BadRequestException(error);
     }
+    const paid = this.paidTicketRepository.merge(dbTicket, input);
+    const savedPaid = await this.paidTicketRepository.save(paid);
 
-    const brand = this.paidTicketRepository.merge(dbTicket, input);
-    if (input.ticketStatusId === 2) {
-      let newRecordTimeKeeping = new TimeKeepingInput();
-      newRecordTimeKeeping.userId = rawInput.createPersonId;
-      newRecordTimeKeeping.workAmountId = 3;
-      newRecordTimeKeeping.workTypeId = 3;
-      newRecordTimeKeeping.createDate = new Date();
-      this.timeKeepingService.createRecordTimeKeeping(
-        ctx,
-        newRecordTimeKeeping
-      );
-    }
-    const savedBrand = await this.paidTicketRepository.save(brand);
+    return plainToInstance(PaidTicketOutput, savedPaid, {
+      excludeExtraneousValues: true,
+    });
+  }
 
-    return plainToInstance(CreatePaidTicketInput, savedBrand, {
+  async updatePaidTicketStatus(
+    ctx: RequestContext,
+    status: PaidStatusUpdateInput,
+    id: number
+  ): Promise<PaidTicketOutput> {
+    const dbTicket = await this.paidTicketRepository.findOneBy({ id });
+
+    const input = plainToInstance(
+      CreatePaidTicketInput,
+      status,
+      {
+        excludeExtraneousValues: true,
+      }
+    );
+    const paid = this.paidTicketRepository.merge(dbTicket, input);
+    const savedPaid = await this.paidTicketRepository.save(paid);
+
+    return plainToInstance(PaidTicketOutput, savedPaid, {
       excludeExtraneousValues: true,
     });
   }
