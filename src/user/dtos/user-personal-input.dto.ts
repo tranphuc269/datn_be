@@ -21,8 +21,18 @@ export class UserPersonalInput {
   @IsNotEmpty()
   @ApiProperty()
   @Expose()
+  identificationIdDate: Date;
+
+  @IsNotEmpty()
+  @ApiProperty()
+  @Expose()
   identificationIdObj: string;
-  
+
+  @IsNotEmpty()
+  @ApiProperty()
+  @Expose()
+  placeID: string;
+
   @IsNotEmpty()
   @ApiProperty()
   @Expose()
@@ -36,20 +46,20 @@ export class UserPersonalInput {
   @IsNotEmpty()
   @ApiProperty()
   @Expose()
-  nationalId: number;
+  nationalId: string;
 
   @IsNotEmpty()
   @ApiProperty()
   @Expose()
-  religionId: number;
+  religionId: string;
 
   @IsNotEmpty()
   @ApiProperty()
   @Expose()
-  ethnicityId: number;
+  ethnicityId: string;
 
   @IsNotEmpty()
   @ApiProperty()
   @Expose()
-  maritalStatusId: number;
+  maritalStatusId: string;
 }

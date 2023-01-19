@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpException,
+  HttpStatus,
+  Param,
+  Post,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { BaseApiResponse } from 'src/shared/dtos/base-api-response.dto';
 import { ReqContext } from 'src/shared/request-context/req-context.decorator';
@@ -32,6 +40,38 @@ export class UserController {
 
     return { data };
   }
+
+  @Get('user-personal-info/:id')
+  async getPersonalInfo(
+    @ReqContext() ctx: RequestContext,
+    @Param('id') id: number
+  ) {
+    const data = await this.userService.getPersonalInfo(ctx, id);
+    if (data) {
+      return data;
+    } else {
+      throw new HttpException(
+        'User information with this id does not exist',
+        HttpStatus.NOT_FOUND
+      );
+    }
+  }
+  @Get('user-work-info/:id')
+  async getWorkInfo(
+    @ReqContext() ctx: RequestContext,
+    @Param('id') id: number
+  ) {
+    const data = await this.userService.getWorkInfo(ctx, id);
+    if (data) {
+      return data;
+    } else {
+      throw new HttpException(
+        'User information with this id does not exist',
+        HttpStatus.NOT_FOUND
+      );
+    }
+  }
+
   @Post('create-work')
   async createWorkInfo(
     @ReqContext() ctx: RequestContext,

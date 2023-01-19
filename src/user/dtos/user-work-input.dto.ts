@@ -8,43 +8,41 @@ export class UserWorkInput {
   @IsNotEmpty()
   workEmail: string;
 
-  @IsNotEmpty()
   @ApiProperty()
   @Expose()
   taxNumber: string;
+
+  @ApiProperty()
+  @Expose()
+  healthInsuranceNumber: string;
+
+  @ApiProperty()
+  @Expose()
+  healthInsurancePlace: string;
 
   @IsNotEmpty()
   @ApiProperty()
   @Expose()
   joinDate: Date;
-  
-  @IsNotEmpty()
+
   @ApiProperty()
   @Expose()
   endDate: Date;
-  
-  @IsNotEmpty()
+
+  @ApiProperty()
+  @Expose()
+  bhxhDate: Date;
+
+  @ApiProperty()
+  @Expose()
+  bhxhRate: string;
+
   @ApiProperty()
   @Expose()
   bhytDate: Date;
 
-  @IsNotEmpty()
+
   @ApiProperty()
   @Expose()
-  healthInsuranceNumber: string;
-  
-  @IsNotEmpty()
-  @ApiProperty()
-  @Expose()
-  healthInsurancePlace: string;
-  
-  @IsNotEmpty()
-  @ApiProperty()
-  @Expose()
-  identificationIdObj: string;
-  
-  @IsNotEmpty()
-  @ApiProperty()
-  @Expose()
-  passportObj: string;
+  leaveReason: string;
 }

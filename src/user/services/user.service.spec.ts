@@ -43,11 +43,12 @@ export class UserService {
     });
     if (user) {
       return user;
+    } else {
+      throw new HttpException(
+        'User with this id does not exist',
+        HttpStatus.NOT_FOUND
+      );
     }
-    throw new HttpException(
-      'User with this email does not exist',
-      HttpStatus.NOT_FOUND
-    );
   }
 
   async create(userInfo: any, userData: UserInput, ctx: RequestContext) {
@@ -128,7 +129,7 @@ export class UserService {
       excludeExtraneousValues: true,
     });
   }
-  
+
   async updateContactUser(
     ctx: RequestContext,
     input: ChangeContactUserInfo
@@ -142,12 +143,6 @@ export class UserService {
       excludeExtraneousValues: true,
     });
   }
-
-
-
-
-
-
 
   async createPersonalUser(
     ctx: RequestContext,
@@ -172,5 +167,38 @@ export class UserService {
     const newUser = this.contactUserRepository.create();
     await this.contactUserRepository.save(newUser);
     return;
+  }
+  async getPersonalInfo(
+    ctx: RequestContext,
+    id: number
+  ): Promise<UserPersonalOutput> {
+    try {
+      const user = await this.userRepository.findOneBy({
+        id,
+      });
+      if (user) {
+        return await this.userPersonalRepository.findOneBy({
+          id: user.userPersonal,
+        });
+      }
+      return;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  async getWorkInfo(ctx: RequestContext, id: number): Promise<UserWorkOutput> {
+    try {
+      const user = await this.userRepository.findOneBy({
+        id,
+      });
+      if (user) {
+        return await this.userWorkRepository.findOneBy({
+          id: user.userWork,
+        });
+      }
+      return;
+    } catch (error) {
+      console.log(error);
+    }
   }
 }

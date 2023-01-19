@@ -79,7 +79,8 @@ export class AuthService {
   public async getAuthenticatedUser(email: string, plainTextPassword: string) {
     try {
       const user = await this.userService.getByWorkEmail(email);
-      await this.verifyPassword(plainTextPassword, user.password);
+      const isPasswordCorrect= await this.verifyPassword(plainTextPassword, user.password);
+      return isPasswordCorrect ? user : null;
     } catch (error) {
       console.log(error);
     }
@@ -93,11 +94,12 @@ export class AuthService {
       hashedPassword
     );
     if (!isPasswordCorrect) {
-      throw new HttpException(
+      return new HttpException(
         'Wrong credentials provided',
         HttpStatus.BAD_REQUEST
       );
     }
+    return isPasswordCorrect;
   }
   public getCookieWithJwtToken(userId: number) {
     const payload: TokenPayload = { userId };

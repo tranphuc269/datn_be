@@ -7,6 +7,8 @@ import {
   Req,
   Res,
   Get,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import RequestWithUser from '../interface/requestWithUser.interface';
 import { AuthService } from '../services/auth.service';
@@ -30,7 +32,6 @@ export class AuthController {
   ) {
     return this.authService.register(registrationData, ctx);
   }
-  @HttpCode(200)
   @Post('log-in')
   async logIn(@Body() input: LoginInput) {
     try {
@@ -38,7 +39,14 @@ export class AuthController {
         input.email,
         input.password
       );
-      return { data };
+      if (data) {
+        return { data };
+      } else {
+        return new HttpException(
+          'User with this id does not exist',
+          HttpStatus.NOT_FOUND
+        );
+      }
     } catch (error) {
       console.log(error);
     }

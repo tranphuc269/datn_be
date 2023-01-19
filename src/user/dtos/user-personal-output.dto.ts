@@ -5,7 +5,7 @@ export class UserPersonalOutput {
   @ApiProperty()
   @Expose()
   id: number;
-  
+
   @ApiProperty()
   @Expose()
   firstName: string;
@@ -24,6 +24,14 @@ export class UserPersonalOutput {
 
   @ApiProperty()
   @Expose()
+  identificationIdDate: Date;
+
+  @ApiProperty()
+  @Expose()
+  placeID: string;
+
+  @ApiProperty()
+  @Expose()
   passportObj: string;
 
   @ApiProperty()
@@ -32,17 +40,17 @@ export class UserPersonalOutput {
 
   @ApiProperty()
   @Expose()
-  nationalId: number;
+  nationalId: string;
 
   @ApiProperty()
   @Expose()
-  religionId: number;
+  religionId: string;
 
   @ApiProperty()
   @Expose()
-  ethnicityId: number;
+  ethnicityId: string;
 
   @ApiProperty()
   @Expose()
-  maritalStatusId: number;
+  maritalStatusId: string;
 }

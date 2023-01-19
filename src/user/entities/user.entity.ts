@@ -61,28 +61,33 @@ export class User {
   @Column({
     name: 'user_personal',
     type: 'int',
+    nullable: true,
   })
   userPersonal: number;
 
   @Column({
     name: 'user_work',
     type: 'int',
+    nullable: true,
   })
   userWork: number;
 
   @Column({
     name: 'contact_user',
     type: 'int',
+    nullable: true,
   })
   contactUser: number;
 
   @CreateDateColumn({
     name: 'created_at',
+    nullable: true,
   })
   createdAt: Date;
 
   @UpdateDateColumn({
     name: 'updated_at',
+    nullable: true,
   })
   updatedAt: Date;
 

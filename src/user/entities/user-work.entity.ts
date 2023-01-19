@@ -1,21 +1,4 @@
-import {
-  Column,
-  CreateDateColumn,
-  DeleteDateColumn,
-  Entity,
-  JoinColumn,
-  JoinTable,
-  ManyToMany,
-  OneToMany,
-  OneToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
-import { TimeKeeping } from '../../time_keeping/entities/time_keeping.entity';
-import { PaidTicket } from '../../ticket/entities/paid_ticket.entity';
-import { PaidAmount } from '../../ticket/entities/paid_amount.entity';
-import { SupplementTicket } from '../../ticket/entities/supplement_ticket.entity';
-import { OvertimeTicket } from '../../ticket/entities/overtime_ticket.entity';
+import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { User } from './user.entity';
 
 @Entity('user_works')
@@ -34,7 +17,7 @@ export class UserWork {
     nullable: true,
   })
   workEmail: string;
-  
+
   @Column({
     name: 'tax_number',
     type: 'nvarchar',
@@ -43,7 +26,7 @@ export class UserWork {
     nullable: true,
   })
   taxNumber: string;
-  
+
   @Column({
     name: 'health_insurance_number',
     type: 'nvarchar',
@@ -52,7 +35,7 @@ export class UserWork {
     nullable: true,
   })
   healthInsuranceNumber: string;
-  
+
   @Column({
     name: 'health_insurance_place',
     type: 'nvarchar',
@@ -61,7 +44,6 @@ export class UserWork {
     nullable: true,
   })
   healthInsurancePlace: string;
-
 
   @Column({
     name: 'join_date',
@@ -84,29 +66,28 @@ export class UserWork {
   bhxhDate: Date;
 
   @Column({
+    name: 'bhxh_rate',
+    type: 'nvarchar',
+    length: 20,
+    nullable: true,
+  })
+  bhxhRate: string;
+
+  @Column({
     name: 'bhyt_date',
     type: 'datetime',
     nullable: true,
   })
   bhytDate: Date;
 
-  @Column({
-    name: 'identification_id_obj',
-    type: 'nvarchar',
-    length: 20,
-    charset: 'utf8',
-    nullable: true,
-  })
-  identificationIdObj: string;
 
   @Column({
-    name: 'passport_obj',
-    type: 'nvarchar',
-    length: 20,
+    name: 'leave_reason',
+    type: 'longtext',
     charset: 'utf8',
     nullable: true,
   })
-  passportObj: string;
+  leaveReason: string;
 
   @OneToOne(() => User, (p) => p.userWorkInfo)
   user: User;

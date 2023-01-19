@@ -29,16 +29,6 @@ export class ChangeUserWorkInfo {
   @ApiPropertyOptional()
   @Expose()
   @IsOptional()
-  identificationIdObj?: string;
-
-  @ApiPropertyOptional()
-  @Expose()
-  @IsOptional()
-  passportObj?: string;
-
-  @ApiPropertyOptional()
-  @Expose()
-  @IsOptional()
   joinDate?: Date;
 
   @ApiPropertyOptional()
@@ -49,5 +39,20 @@ export class ChangeUserWorkInfo {
   @ApiPropertyOptional()
   @Expose()
   @IsOptional()
+  bhxhDate?: Date;
+
+  @ApiPropertyOptional()
+  @Expose()
+  @IsOptional()
+  bhxhRate?: string;
+
+  @ApiPropertyOptional()
+  @Expose()
+  @IsOptional()
   bhytDate?: Date;
+
+  @ApiPropertyOptional()
+  @Expose()
+  @IsOptional()
+  leaveReason?: string;
 }

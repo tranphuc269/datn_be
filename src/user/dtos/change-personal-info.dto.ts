@@ -34,22 +34,22 @@ export class ChangeUserInfo {
   @ApiPropertyOptional()
   @Expose()
   @IsOptional()
-  nationalId?: number;
+  nationalId?: string;
 
   @ApiPropertyOptional()
   @Expose()
   @IsOptional()
-  religionId: number;
+  religionId: string;
 
   @ApiPropertyOptional()
   @Expose()
   @IsOptional()
-  ethnicityId: number;
+  ethnicityId: string;
 
   @ApiPropertyOptional()
   @Expose()
   @IsOptional()
-  maritalStatusId: number;
+  maritalStatusId: string;
 
   @ApiPropertyOptional()
   @Expose()

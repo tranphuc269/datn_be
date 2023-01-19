@@ -61,6 +61,22 @@ export class UserPersonal {
   identificationIdObj: string;
 
   @Column({
+    name: 'identification_id_date',
+    type: 'datetime',
+    nullable: true,
+  })
+  identificationIdDate: Date;
+
+  @Column({
+    name: 'place_identification_ID',
+    type: 'nvarchar',
+    length: 20,
+    charset: 'utf8',
+    nullable: true,
+  })
+  placeID: string;
+
+  @Column({
     name: 'passport_obj',
     type: 'nvarchar',
     length: 20,
@@ -78,31 +94,39 @@ export class UserPersonal {
 
   @Column({
     name: 'national_id',
-    type: 'int',
+    type: 'nvarchar',
+    length: 20,
+    charset: 'utf8',
     nullable: true,
   })
-  nationalId: number;
+  nationalId: string;
 
   @Column({
     name: 'religion_id',
-    type: 'int',
+    type: 'nvarchar',
+    length: 20,
+    charset: 'utf8',
     nullable: true,
   })
-  religionId: number;
+  religionId: string;
 
   @Column({
     name: 'ethnicity_id',
-    type: 'int',
+    type: 'nvarchar',
+    length: 20,
+    charset: 'utf8',
     nullable: true,
   })
-  ethnicityId: number;
+  ethnicityId: string;
 
   @Column({
     name: 'marital_status_id',
-    type: 'int',
+    type: 'nvarchar',
+    length: 20,
+    charset: 'utf8',
     nullable: true,
   })
-  maritalStatusId: number;
+  maritalStatusId: string;
 
   @OneToOne(() => User, (p) => p.userPersonalInfo)
   user: User;
