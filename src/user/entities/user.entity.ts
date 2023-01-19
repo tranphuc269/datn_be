@@ -6,6 +6,7 @@ import {
   JoinColumn,
   JoinTable,
   ManyToMany,
+  ManyToOne,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -16,6 +17,10 @@ import { PaidTicket } from '../../ticket/entities/paid_ticket.entity';
 import { PaidAmount } from '../../ticket/entities/paid_amount.entity';
 import { SupplementTicket } from '../../ticket/entities/supplement_ticket.entity';
 import { OvertimeTicket } from '../../ticket/entities/overtime_ticket.entity';
+import { UserPersonal } from './user-personal.entity';
+import { UserWork } from './user-work.entity';
+import { Role } from './role.entity';
+import { ContactUser } from './contact-user.entity';
 
 @Entity('users')
 export class User {
@@ -26,66 +31,16 @@ export class User {
   id: number;
 
   @Column({
-    name: 'name',
-    type: 'nvarchar',
-    length: 255,
-    charset: 'utf8',
-  })
-  name: string;
-
-  @Column({
     name: 'account_status',
     type: 'int',
   })
   accountStatus: number;
 
   @Column({
-    name: 'password',
-    type: 'nvarchar',
-    length: 255,
-    charset: 'utf8',
+    name: 'role',
+    type: 'int',
   })
-  password: string;
-
-  @Column({
-    name: 'first_name',
-    type: 'nvarchar',
-    length: 50,
-    charset: 'utf8',
-  })
-  firstName: string;
-
-  @Column({
-    name: 'last_name',
-    type: 'nvarchar',
-    length: 50,
-    charset: 'utf8',
-  })
-  lastName: string;
-
-  @Column({
-    name: 'birthday',
-    type: 'datetime',
-    nullable: true,
-  })
-  birthday: Date;
-
-  @Column({
-    name: 'identification_id_obj',
-    type: 'nvarchar',
-    length: 20,
-    charset: 'utf8',
-  })
-  identificationIdObj: string;
-
-  @Column({
-    name: 'passport_obj',
-    type: 'nvarchar',
-    length: 20,
-    charset: 'utf8',
-    nullable: true,
-  })
-  passportObj: string;
+  role: number;
 
   @Column({
     name: 'email',
@@ -96,32 +51,43 @@ export class User {
   email: string;
 
   @Column({
-    name: 'phone_number',
+    name: 'password',
     type: 'nvarchar',
-    length: 20,
+    length: 255,
     charset: 'utf8',
   })
-  phoneNumber: string;
+  password: string;
 
   @Column({
-    name: 'gender',
-    type: 'tinyint',
-  })
-  gender: number;
-
-  @Column({
-    name: 'national_id',
+    name: 'user_personal',
     type: 'int',
+    nullable: true,
   })
-  nationalId: number;
+  userPersonal: number;
+
+  @Column({
+    name: 'user_work',
+    type: 'int',
+    nullable: true,
+  })
+  userWork: number;
+
+  @Column({
+    name: 'contact_user',
+    type: 'int',
+    nullable: true,
+  })
+  contactUser: number;
 
   @CreateDateColumn({
     name: 'created_at',
+    nullable: true,
   })
   createdAt: Date;
 
   @UpdateDateColumn({
     name: 'updated_at',
+    nullable: true,
   })
   updatedAt: Date;
 
@@ -143,12 +109,36 @@ export class User {
   @OneToMany(() => OvertimeTicket, (p) => p.createPerson)
   overtimeTicketsCreate: OvertimeTicket[];
 
-  @OneToOne(() => PaidAmount, (p) => p.user)
+  @OneToOne(() => PaidAmount, (p) => p.user, { cascade: true })
   @JoinColumn({
     name: 'paid_amount',
   })
   paidAmount: PaidAmount;
 
+  @OneToOne(() => UserPersonal, (p) => p.user, { cascade: true })
+  @JoinColumn({
+    name: 'user_personal',
+  })
+  userPersonalInfo: UserPersonal;
+
+  @OneToOne(() => UserWork, (p) => p.user, { cascade: true })
+  @JoinColumn({
+    name: 'user_work',
+  })
+  userWorkInfo: UserWork;
+
+  @OneToOne(() => ContactUser, (p) => p.user, { cascade: true })
+  @JoinColumn({
+    name: 'contact_user',
+  })
+  contactUserInfo: ContactUser;
+
   @ManyToMany(() => OvertimeTicket, (p) => p, { cascade: true })
   overtimeTickets: OvertimeTicket[];
+
+  @ManyToOne(() => Role, (b) => b.users)
+  @JoinColumn({
+    name: 'role',
+  })
+  roleId: Role;
 }

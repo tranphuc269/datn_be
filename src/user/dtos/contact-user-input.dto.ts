@@ -2,24 +2,34 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
 import { IsEnum, IsNotEmpty, IsOptional } from 'class-validator';
 
-export class UserInput {
+export class ContactUserInput {
   @ApiProperty()
   @Expose()
   @IsNotEmpty()
-  accountStatus: number;
+  city: string;
 
   @IsNotEmpty()
   @ApiProperty()
   @Expose()
-  role: number;
+  state: string;
 
   @IsNotEmpty()
   @ApiProperty()
   @Expose()
-  password: string;
+  address1: string;
 
   @IsNotEmpty()
   @ApiProperty()
   @Expose()
-  email: string;
+  address2: string;
+  
+  @IsNotEmpty()
+  @ApiProperty()
+  @Expose()
+  phoneNumber: string;
+
+  @IsNotEmpty()
+  @ApiProperty()
+  @Expose()
+  countryId: number;
 }

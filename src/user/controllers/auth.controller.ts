@@ -7,8 +7,9 @@ import {
   Req,
   Res,
   Get,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
-import RegisterDto from '../dtos/register.dto';
 import RequestWithUser from '../interface/requestWithUser.interface';
 import { AuthService } from '../services/auth.service';
 import { LocalAuthenticationGuard } from '../strategies/localAuthentication.guard';
@@ -17,15 +18,20 @@ import { JwtAuthenticationGuard } from '../strategies/jwt-authentication.guard';
 import { LoginInput } from '../dtos/login-input.dto';
 import { plainToInstance } from 'class-transformer';
 import { UserTokenOutput } from '../dtos/user-token-output.dto';
+import { UserInput } from '../dtos/register.dto';
+import { ReqContext } from 'src/shared/request-context/req-context.decorator';
+import { RequestContext } from 'src/shared/request-context/request-context';
 
 @Controller('authentication')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
   @Post('register')
-  async register(@Body() registrationData: RegisterDto) {
-    return this.authService.register(registrationData);
+  async register(
+    @Body() registrationData: UserInput,
+    @ReqContext() ctx: RequestContext
+  ) {
+    return this.authService.register(registrationData, ctx);
   }
-  @HttpCode(200)
   @Post('log-in')
   async logIn(@Body() input: LoginInput) {
     try {
@@ -33,7 +39,14 @@ export class AuthController {
         input.email,
         input.password
       );
-      return { data };
+      if (data) {
+        return { data };
+      } else {
+        return new HttpException(
+          'User with this id does not exist',
+          HttpStatus.NOT_FOUND
+        );
+      }
     } catch (error) {
       console.log(error);
     }

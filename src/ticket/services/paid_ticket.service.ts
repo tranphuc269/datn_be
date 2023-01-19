@@ -15,11 +15,14 @@ import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import { DetailErrorCode } from 'src/shared/constant/error-code';
 import { ErrCategoryCode, ErrDetailCode } from 'src/shared/constant/errors';
+import { TimeKeepingService } from '../../time_keeping/services/time_keeping.service';
+import { TimeKeepingInput } from 'src/time_keeping/dtos/timekeeping-input.dto';
 import { PaidUpdateInput } from '../dtos/update-paid-input.dto';
 import { PaidStatusUpdateInput } from '../dtos/status-ticket-input.dto';
 @Injectable()
 export class PaidTicketService {
   constructor(
+    private readonly timeKeepingService: TimeKeepingService,
     @InjectRepository(PaidTicket)
     private readonly paidTicketRepository: PaidTicketRepository
   ) {}
@@ -48,16 +51,6 @@ export class PaidTicketService {
       throw new HttpException('Error', HttpStatus.BAD_REQUEST);
     }
   }
-  // async updatePaidTicket(id: number, paidUpdateData: any) {
-  //   let currentPaidTicket = this.getPaidTicketById(id);
-  //   if (currentPaidTicket) {
-  //     const brand = this.paidTicketRepository.merge(
-  //       await currentPaidTicket,
-  //       paidUpdateData
-  //     );
-  //     return currentPaidTicket;
-  //   }
-  // }
   async updatePaidTicket(
     ctx: RequestContext,
     rawInput: PaidUpdateInput,
@@ -100,5 +93,34 @@ export class PaidTicketService {
     return plainToInstance(PaidTicketOutput, savedPaid, {
       excludeExtraneousValues: true,
     });
+  }
+  async getAllPaidTicket(ctx: RequestContext, userId: number) {
+    try {
+      const myPaidTickets = await this.paidTicketRepository.findBy({
+        createPersonId: userId,
+      });
+      return myPaidTickets;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  async getPaidTicketByStatus(
+    ctx: RequestContext,
+    userId: number,
+    statusId: number
+  ) {
+    try {
+      const myPaidTickets = await this.paidTicketRepository
+        .createQueryBuilder('paid_tickets')
+        .where('paid_tickets.create_person_id =:userId', {
+          userId,
+        })
+        .andWhere('paid_tickets.ticket_status_id =:statusId', {
+          statusId,
+        });
+      return myPaidTickets.getMany();
+    } catch (error) {
+      console.log(error);
+    }
   }
 }

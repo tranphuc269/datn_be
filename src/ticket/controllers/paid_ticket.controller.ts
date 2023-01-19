@@ -48,18 +48,25 @@ export class PaidTicketController {
     return { data };
   }
 
-  @Put('update/:id')
-  @HttpCode(HttpStatus.OK)
-  async updateTicketStatus(
+  @Get('my-paid:id')
+  async getAllMyPaidTicket(
     @ReqContext() ctx: RequestContext,
-    @Body() status: PaidStatusUpdateInput,
-    @Param('id') id: number
-  ): Promise<BaseApiResponse<PaidTicketOutput>> {
-    console.log(status);
-    const data = await this.paidTicketService.updatePaidTicketStatus(
+    @Param('id') userId: number
+  ): Promise<BaseApiResponse<PaidTicketOutput[]>> {
+    const data = await this.paidTicketService.getAllPaidTicket(ctx, userId);
+    return { data };
+  }
+
+  @Get('paid-status:status_id:id')
+  async getMyPaidTicketByStatus(
+    @ReqContext() ctx: RequestContext,
+    @Param('id') userId: number,
+    @Param('status_id') statusId: number
+  ): Promise<BaseApiResponse<PaidTicketOutput[]>> {
+    const data = await this.paidTicketService.getPaidTicketByStatus(
       ctx,
-      status,
-      id
+      userId,
+      statusId
     );
     return { data };
   }
