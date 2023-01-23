@@ -54,4 +54,24 @@ export class TimeKeepingController {
     );
     return { data };
   }
+
+  @Get('month-timekeeping/:id')
+  async getRecordByThisMonthAndUserId(
+    @ReqContext() ctx: RequestContext,
+    @Param('id') userId: number
+  ): Promise<BaseApiResponse<TimeKeepingOutput[]>> {
+    const data = await this.timeKeepingService.getRecordByThisMonthAndUserId(
+      ctx,
+      userId
+    );
+    return { data };
+  }
+
+  @Post('new-record-in-month/:id')
+  async createRecordInMonth(
+    @ReqContext() ctx: RequestContext,
+    @Param('id') userId: number
+  ) {
+    return this.timeKeepingService.createRecordInMonth(ctx, userId);
+  }
 }

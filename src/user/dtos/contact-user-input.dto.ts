@@ -31,5 +31,5 @@ export class ContactUserInput {
   @IsNotEmpty()
   @ApiProperty()
   @Expose()
-  countryId: number;
+  countryId: string;
 }

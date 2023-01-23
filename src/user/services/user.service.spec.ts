@@ -186,6 +186,27 @@ export class UserService {
       console.log(error);
     }
   }
+  async getContactInfo(
+    ctx: RequestContext,
+    id: number
+  ): Promise<ContactUserOutput> {
+    try {
+      const user = await this.userRepository.findOneBy({
+        id,
+      });
+      if (user) {
+        const data = await this.contactUserRepository.findOneBy({
+          id: user.contactUser,
+        });
+        if (data) {
+          return { ...data, email: user.email };
+        }
+      }
+      return;
+    } catch (error) {
+      console.log(error);
+    }
+  }
   async getWorkInfo(ctx: RequestContext, id: number): Promise<UserWorkOutput> {
     try {
       const user = await this.userRepository.findOneBy({

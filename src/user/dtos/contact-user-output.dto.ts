@@ -5,7 +5,7 @@ export class ContactUserOutput {
   @ApiProperty()
   @Expose()
   id: number;
-  
+
   @ApiProperty()
   @Expose()
   city: string;
@@ -28,5 +28,9 @@ export class ContactUserOutput {
 
   @ApiProperty()
   @Expose()
-  countryId: number;
+  countryId: string;
+
+  @ApiProperty()
+  @Expose()
+  email: string;
 }
