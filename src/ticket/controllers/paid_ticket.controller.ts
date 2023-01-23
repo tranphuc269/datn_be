@@ -27,7 +27,7 @@ export class PaidTicketController {
     return 'hello';
   }
 
-  @Post()
+  @Post('new-paid-ticket')
   @HttpCode(HttpStatus.CREATED)
   async createPaidTicket(
     @ReqContext() ctx: RequestContext,
@@ -48,7 +48,7 @@ export class PaidTicketController {
     return { data };
   }
 
-  @Get('my-paid:id')
+  @Get('my-paid/:id')
   async getAllMyPaidTicket(
     @ReqContext() ctx: RequestContext,
     @Param('id') userId: number
@@ -57,7 +57,13 @@ export class PaidTicketController {
     return { data };
   }
 
-  @Get('paid-status:status_id:id')
+  @Get('paid-type')
+  async getPaidTicketType(@ReqContext() ctx: RequestContext) {
+    const data = await this.paidTicketService.getPaidTicketType(ctx);
+    return { data };
+  }
+
+  @Get('paid-status/:status_id/:id')
   async getMyPaidTicketByStatus(
     @ReqContext() ctx: RequestContext,
     @Param('id') userId: number,
@@ -68,6 +74,14 @@ export class PaidTicketController {
       userId,
       statusId
     );
+    return { data };
+  }
+  @Get('paid-ticket/:id')
+  async getPaidTicketById(
+    @ReqContext() ctx: RequestContext,
+    @Param('id') paidId: number
+  ): Promise<BaseApiResponse<PaidTicketOutput>> {
+    const data = await this.paidTicketService.getPaidTicketById(ctx, paidId);
     return { data };
   }
 }

@@ -74,10 +74,11 @@ export class ContactUser {
 
   @Column({
     name: 'country_id',
-    type: 'int',
+    length: 20,
+    charset: 'utf8',
     nullable: true,
   })
-  countryId: number;
+  countryId: string;
 
   @OneToOne(() => User, (p) => p.contactUserInfo)
   user: User;

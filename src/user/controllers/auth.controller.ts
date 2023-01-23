@@ -35,10 +35,7 @@ export class AuthController {
   @Post('log-in')
   async logIn(@Body() input: LoginInput) {
     try {
-      const data = await this.authService.getAuthenticatedUser(
-        input.email,
-        input.password
-      );
+      const data = await this.authService.login(input);
       if (data) {
         return { data };
       } else {

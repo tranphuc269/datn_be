@@ -21,6 +21,7 @@ import { UserWorkOutput } from '../dtos/user-work-output.dto';
 import { ContactUserInput } from '../dtos/contact-user-input.dto';
 import { ContactUserOutput } from '../dtos/contact-user-output.dto';
 import { ChangeContactUserInfo } from '../dtos/change-contact-user.dto';
+import { profile } from 'console';
 @Controller('users')
 @ApiTags('users')
 export class UserController {
@@ -29,6 +30,28 @@ export class UserController {
   @Get('hello')
   async helloWorld(): Promise<string> {
     return 'hello';
+  }
+
+  @Get('profile-info/:id')
+  async getProfileInfo(
+    @ReqContext() ctx: RequestContext,
+    @Param('id') id: number
+  ) {
+    const data = await this.userService.getById(id);
+    if (data) {
+      let infoData = {
+        id: data.id,
+        accountStatus: data.accountStatus,
+        role: data.role,
+        email: data.email,
+      };
+      return infoData;
+    } else {
+      throw new HttpException(
+        'User information with this id does not exist',
+        HttpStatus.NOT_FOUND
+      );
+    }
   }
 
   @Post('create-personal')
@@ -72,6 +95,22 @@ export class UserController {
     }
   }
 
+  @Get('user-contact-info/:id')
+  async getContactInfo(
+    @ReqContext() ctx: RequestContext,
+    @Param('id') id: number
+  ) {
+    const data = await this.userService.getContactInfo(ctx, id);
+    if (data) {
+      return data;
+    } else {
+      throw new HttpException(
+        'User information with this id does not exist',
+        HttpStatus.NOT_FOUND
+      );
+    }
+  }
+  
   @Post('create-work')
   async createWorkInfo(
     @ReqContext() ctx: RequestContext,

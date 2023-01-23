@@ -9,6 +9,7 @@ import { UserWork } from '../entities/user-work.entity';
 import { RequestContext } from 'src/shared/request-context/request-context';
 import { UserWorkInput } from '../dtos/user-work-input.dto';
 import { UserService } from './user.service.spec';
+import { LoginInput } from '../dtos/login-input.dto';
 
 @Injectable()
 export class AuthService {
@@ -53,12 +54,12 @@ export class AuthService {
       );
     }
   }
-  public async login(email: string, hashedPassword: string) {
+  public async login(user: LoginInput) {
     try {
-      const user = await this.userService.getByWorkEmail(email);
+      const userData = await this.userService.getByWorkEmail(user.email);
       const isPasswordCorrect = await bcrypt.compare(
-        hashedPassword,
-        user.password
+        user.password,
+        userData.password
       );
       if (!isPasswordCorrect) {
         throw new HttpException(
@@ -67,7 +68,12 @@ export class AuthService {
         );
       }
       user.password = undefined;
-      return user;
+      const payload = { email: userData.email, sub: userData.id };
+      return {
+        access_token: this.jwtService.sign(payload, {
+          secret: process.env.JWT_KEY,
+        }),
+      };
     } catch (error) {
       console.log(error);
       throw new HttpException(
@@ -79,7 +85,10 @@ export class AuthService {
   public async getAuthenticatedUser(email: string, plainTextPassword: string) {
     try {
       const user = await this.userService.getByWorkEmail(email);
-      const isPasswordCorrect= await this.verifyPassword(plainTextPassword, user.password);
+      const isPasswordCorrect = await this.verifyPassword(
+        plainTextPassword,
+        user.password
+      );
       return isPasswordCorrect ? user : null;
     } catch (error) {
       console.log(error);

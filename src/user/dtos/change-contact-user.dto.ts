@@ -34,5 +34,10 @@ export class ChangeContactUserInfo {
   @ApiPropertyOptional()
   @Expose()
   @IsOptional()
-  countryId?: number;
+  countryId?: string;
+  
+  @ApiPropertyOptional()
+  @Expose()
+  @IsOptional()
+  email?: string;
 }

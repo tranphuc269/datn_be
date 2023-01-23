@@ -19,10 +19,12 @@ import { TimeKeepingService } from '../../time_keeping/services/time_keeping.ser
 import { TimeKeepingInput } from 'src/time_keeping/dtos/timekeeping-input.dto';
 import { PaidUpdateInput } from '../dtos/update-paid-input.dto';
 import { PaidStatusUpdateInput } from '../dtos/status-ticket-input.dto';
+import { PaidTypeService } from './paidtype.service';
 @Injectable()
 export class PaidTicketService {
   constructor(
     private readonly timeKeepingService: TimeKeepingService,
+    private readonly paidTypeService: PaidTypeService,
     @InjectRepository(PaidTicket)
     private readonly paidTicketRepository: PaidTicketRepository
   ) {}
@@ -43,7 +45,7 @@ export class PaidTicketService {
       throw new HttpException('Error', HttpStatus.BAD_REQUEST);
     }
   }
-  async getPaidTicketById(id: number) {
+  async getPaidTicketById(ctx: RequestContext, id: number) {
     try {
       const paidTicket = this.paidTicketRepository.findOneBy({ id });
       return paidTicket;
@@ -80,13 +82,9 @@ export class PaidTicketService {
   ): Promise<PaidTicketOutput> {
     const dbTicket = await this.paidTicketRepository.findOneBy({ id });
 
-    const input = plainToInstance(
-      CreatePaidTicketInput,
-      status,
-      {
-        excludeExtraneousValues: true,
-      }
-    );
+    const input = plainToInstance(CreatePaidTicketInput, status, {
+      excludeExtraneousValues: true,
+    });
     const paid = this.paidTicketRepository.merge(dbTicket, input);
     const savedPaid = await this.paidTicketRepository.save(paid);
 
@@ -122,5 +120,12 @@ export class PaidTicketService {
     } catch (error) {
       console.log(error);
     }
+  }
+  async getPaidTicketType(ctx: RequestContext) {
+    try {
+      const listPaidType = await this.paidTypeService.getAllPaidTicket(ctx);
+      console.log(listPaidType);
+      return listPaidType;
+    } catch (error) {}
   }
 }

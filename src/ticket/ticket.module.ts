@@ -14,6 +14,9 @@ import { TimeKeeping } from '../time_keeping/entities/time_keeping.entity';
 import { SupplementTicketRepository } from './repositories/supplement_ticket.repository';
 import { SupplementTicketController } from './controllers/supplement_ticket.controller';
 import { SupplementTicketService } from './services/supplement_ticket.service';
+import { PaidTypeRepository } from './repositories/paid_type.repository';
+import { PaidTypeService } from './services/paidtype.service';
+import { PaidType } from './entities/paid_type.entity';
 
 @Module({
   imports: [
@@ -24,6 +27,7 @@ import { SupplementTicketService } from './services/supplement_ticket.service';
       OvertimeTicket,
       SupplementTicket,
       TimeKeeping,
+      PaidType,
     ]),
   ],
   controllers: [PaidTicketController, SupplementTicketController],
@@ -34,6 +38,8 @@ import { SupplementTicketService } from './services/supplement_ticket.service';
     PaidTicketRepository,
     SupplementTicketRepository,
     SupplementTicketService,
+    PaidTypeRepository,
+    PaidTypeService,
   ],
 })
 export class TicketModule {}
