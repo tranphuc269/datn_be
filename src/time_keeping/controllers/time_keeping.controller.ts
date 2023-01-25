@@ -66,6 +66,17 @@ export class TimeKeepingController {
     );
     return { data };
   }
+  @Get('total-month-working/:id')
+  async getTotalWorkingThisMonth(
+    @ReqContext() ctx: RequestContext,
+    @Param('id') userId: number
+  ) {
+    const data = await this.timeKeepingService.getTotalWorkingThisMonth(
+      ctx,
+      userId
+    );
+    return { data };
+  }
 
   @Post('new-record-in-month/:id')
   async createRecordInMonth(

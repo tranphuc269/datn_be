@@ -48,6 +48,31 @@ export class PaidTicketController {
     return { data };
   }
 
+  @Put('approve-ticket/:id')
+  @HttpCode(HttpStatus.OK)
+  async approveTicket(
+    @ReqContext() ctx: RequestContext,
+    @Body() input: PaidUpdateInput,
+    @Param('id') id: number
+  ): Promise<BaseApiResponse<PaidTicketOutput>> {
+    const data = await this.paidTicketService.approveTicket(ctx, input, id);
+    return { data };
+  }
+  @Put('denied-ticket/:id')
+  @HttpCode(HttpStatus.OK)
+  async deniedTicket(
+    @ReqContext() ctx: RequestContext,
+    @Body() status: PaidStatusUpdateInput,
+    @Param('id') id: number
+  ): Promise<BaseApiResponse<PaidTicketOutput>> {
+    const data = await this.paidTicketService.updatePaidTicketStatus(
+      ctx,
+      status,
+      id
+    );
+    return { data };
+  }
+
   @Get('my-paid/:id')
   async getAllMyPaidTicket(
     @ReqContext() ctx: RequestContext,
@@ -82,6 +107,17 @@ export class PaidTicketController {
     @Param('id') paidId: number
   ): Promise<BaseApiResponse<PaidTicketOutput>> {
     const data = await this.paidTicketService.getPaidTicketById(ctx, paidId);
+    return { data };
+  }
+  @Get('paid-ticket-related/:id')
+  async getPaidTicketRelatedMe(
+    @ReqContext() ctx: RequestContext,
+    @Param('id') userId: number
+  ): Promise<BaseApiResponse<PaidTicketOutput[]>> {
+    const data = await this.paidTicketService.getPaidTicketRelatedMe(
+      ctx,
+      userId
+    );
     return { data };
   }
 }

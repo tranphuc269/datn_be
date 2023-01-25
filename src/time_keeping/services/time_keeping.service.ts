@@ -145,4 +145,39 @@ export class TimeKeepingService {
     });
     return listRecord;
   }
+  async getRecordByDateAndUserId(
+    ctx: RequestContext,
+    userId: number,
+    date: string
+  ): Promise<TimeKeepingOutput> {
+    const listRecord = await this.timeKeepingRepository
+      .createQueryBuilder('time_keepings')
+      .where('time_keepings.user_id =:userId', {
+        userId: userId,
+      })
+      .andWhere('CAST(time_keepings.create_date as DATE) = :date', {
+        date: date,
+      })
+      .getOne();
+    return listRecord;
+  }
+  async getTotalWorkingThisMonth(ctx: RequestContext, userId: number) {
+    let date = new Date();
+    let startDate = moment(date).startOf('month').format('YYYY-MM-DD');
+    let endDate = moment(date).endOf('month').format('YYYY-MM-DD');
+    const listRecord = await this.timeKeepingRepository
+      .createQueryBuilder('time_keepings').select('SUM(time_keepings.work_amount_id) as sum')
+      .where('time_keepings.user_id =:userId', {
+        userId: userId,
+      })
+      .andWhere(
+        'CAST(time_keepings.create_date as DATE) between :startDate and :endDate',
+        {
+          startDate: startDate,
+          endDate: endDate,
+        }
+      )
+      .getRawOne();
+    return listRecord;
+  }
 }
