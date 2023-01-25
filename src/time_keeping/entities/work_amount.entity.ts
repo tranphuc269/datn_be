@@ -35,6 +35,4 @@ export class WorkAmount {
     nullable: true,
   })
   deletedAt?: Date;
-  @OneToMany(() => TimeKeeping, (b) => b.workAmount)
-  timeKeepings: TimeKeeping[];
 }
