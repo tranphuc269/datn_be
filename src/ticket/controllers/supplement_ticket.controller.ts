@@ -56,7 +56,7 @@ export class SupplementTicketController {
     return { data };
   }
 
-  @Get('my-supplement:id')
+  @Get('my-supplement/:id')
   async getAllMySupplementTicket(
     @ReqContext() ctx: RequestContext,
     @Param('id') userId: number
