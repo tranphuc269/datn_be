@@ -18,6 +18,9 @@ export class SupplementTicketOutput {
   startTime: Date;
   @Expose()
   @ApiProperty()
+  approveDate: Date;
+  @Expose()
+  @ApiProperty()
   endTime: Date;
   @Expose()
   @ApiProperty()

@@ -68,6 +68,19 @@ export class CreateSupplementTicketInput {
   })
   @Expose()
   startTime: Date;
+  
+  @ApiProperty()
+  @IsOptional()
+  @IsNotEmpty({
+    context: {
+      detail: new DetailErrorCode(
+        ErrCategoryCode.REQUIRED_PARAM,
+        ErrDetailCode.NAME
+      ),
+    },
+  })
+  @Expose()
+  approveDate: Date;
 
   @ApiProperty()
   @IsOptional()

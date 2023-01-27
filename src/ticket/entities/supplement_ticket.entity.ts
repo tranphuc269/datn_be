@@ -71,16 +71,25 @@ export class SupplementTicket {
 
   @CreateDateColumn({
     name: 'created_at',
+    type: 'datetime',
   })
   createdAt: Date;
+  @Column({
+    name: 'approve_date',
+    type: 'datetime',
+    nullable: true
+  })
+  approveDate: Date;
 
   @UpdateDateColumn({
     name: 'updated_at',
+    type: 'datetime',
   })
   updatedAt: Date;
 
   @DeleteDateColumn({
     name: 'deleted_at',
+    type: 'datetime',
     nullable: true,
   })
   deletedAt?: Date;
