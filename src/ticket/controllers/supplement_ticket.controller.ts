@@ -67,8 +67,19 @@ export class SupplementTicketController {
     );
     return { data };
   }
+  @Get('supplement/:id')
+  async getSupplementTicketById(
+    @ReqContext() ctx: RequestContext,
+    @Param('id') idTicket: number
+  ): Promise<BaseApiResponse<SupplementTicketOutput>> {
+    const data = await this.supplementTicketService.getSupplementTicketById(
+      ctx,
+      idTicket
+    );
+    return { data };
+  }
 
-  @Get('supplement-status:status_id:id')
+  @Get('supplement-status/:status_id/:id')
   async getMySupplementTicketByStatus(
     @ReqContext() ctx: RequestContext,
     @Param('id') userId: number,

@@ -30,16 +30,21 @@ export class SupplementTicketService {
       const newSupplementTicket = plainToInstance(SupplementTicket, {
         ...paidTicketDto,
       });
-      const saveTicket = this.supplementTicketRepository.save(newSupplementTicket);
-      return plainToInstance(SupplementTicketOutput, saveTicket, {
-        excludeExtraneousValues: true,
-      });
+      const saveTicket = await this.supplementTicketRepository.save(
+        newSupplementTicket
+      );
+      return {
+        ...plainToInstance(SupplementTicketOutput, saveTicket, {
+          excludeExtraneousValues: true,
+        }),
+        id: saveTicket.id,
+      };
     } catch (error) {
       console.log(error);
       throw new HttpException('Error', HttpStatus.BAD_REQUEST);
     }
   }
-  async getSupplementTicketById(id: number) {
+  async getSupplementTicketById(ctx: RequestContext, id: number) {
     try {
       const paidTicket = this.supplementTicketRepository.findOneBy({ id });
       return paidTicket;

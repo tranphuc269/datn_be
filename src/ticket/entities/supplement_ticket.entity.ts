@@ -29,7 +29,7 @@ export class SupplementTicket {
   @Column({
     name: 'related_person_id',
     type: 'int',
-    nullable: true
+    nullable: true,
   })
   relatedPersonId: number;
 
@@ -44,6 +44,12 @@ export class SupplementTicket {
     type: 'int',
   })
   ticketStatusId: number;
+  @Column({
+    name: 'amount',
+    type: 'int',
+    nullable: true,
+  })
+  amount: number;
 
   @Column({
     name: 'start_time',
@@ -77,7 +83,7 @@ export class SupplementTicket {
   @Column({
     name: 'approve_date',
     type: 'datetime',
-    nullable: true
+    nullable: true,
   })
   approveDate: Date;
 
