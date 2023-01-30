@@ -11,7 +11,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { BaseApiResponse } from 'src/shared/dtos/base-api-response.dto';
 import { ReqContext } from 'src/shared/request-context/req-context.decorator';
 import { RequestContext } from 'src/shared/request-context/request-context';
-import { ChangeUserInfo } from '../dtos/change-personal-info.dto';
+import { ChangeUserPersonalInfo } from '../dtos/change-personal-info.dto';
 import { UserPersonalOutput } from '../dtos/user-personal-output.dto';
 import { UserPersonalInput } from '../dtos/user-personal-input.dto';
 import { UserWorkInput } from '../dtos/user-work-input.dto';
@@ -22,6 +22,8 @@ import { ContactUserInput } from '../dtos/contact-user-input.dto';
 import { ContactUserOutput } from '../dtos/contact-user-output.dto';
 import { ChangeContactUserInfo } from '../dtos/change-contact-user.dto';
 import { profile } from 'console';
+import { UserOutput } from '../dtos/user-output.dto';
+import { ChangeUserInfo } from '../dtos/change-user-input.dto';
 @Controller('users')
 @ApiTags('users')
 export class UserController {
@@ -110,7 +112,7 @@ export class UserController {
       );
     }
   }
-  
+
   @Post('create-work')
   async createWorkInfo(
     @ReqContext() ctx: RequestContext,
@@ -130,10 +132,20 @@ export class UserController {
     return { data };
   }
 
+  @Post('change-user-info/:id')
+  async changeUserInfo(
+    @ReqContext() ctx: RequestContext,
+    @Body() input: ChangeUserInfo,
+    @Param('id') id: number
+  ): Promise<BaseApiResponse<UserOutput>> {
+    const data = await this.userService.updateUser(ctx, input, id);
+
+    return { data };
+  }
   @Post('change-personal')
   async changePersonalInfo(
     @ReqContext() ctx: RequestContext,
-    @Body() input: ChangeUserInfo
+    @Body() input: ChangeUserPersonalInfo
   ): Promise<BaseApiResponse<UserPersonalOutput>> {
     const data = await this.userService.updatePersonalUser(ctx, input);
 

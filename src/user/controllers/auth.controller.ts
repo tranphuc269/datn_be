@@ -33,9 +33,9 @@ export class AuthController {
     return this.authService.register(registrationData, ctx);
   }
   @Post('log-in')
-  async logIn(@Body() input: LoginInput) {
+  async logIn(@Body() input: LoginInput, @ReqContext() ctx: RequestContext) {
     try {
-      const data = await this.authService.login(input);
+      const data = await this.authService.login(ctx, input);
       if (data) {
         return { data };
       } else {

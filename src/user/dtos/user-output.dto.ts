@@ -4,15 +4,15 @@ import { Expose } from 'class-transformer';
 export class UserOutput {
   @ApiProperty()
   @Expose()
-  id: string;
+  id: number;
 
   @ApiProperty()
   @Expose()
-  fullname: string;
+  accountStatus: number;
 
   @ApiProperty()
   @Expose()
-  username: string;
+  role: number;
 
   @ApiProperty()
   @Expose()
@@ -20,53 +20,29 @@ export class UserOutput {
 
   @ApiProperty()
   @Expose()
-  phone: string;
+  password: string;
 
   @ApiProperty()
   @Expose()
-  address: string;
+  userPersonal: number;
 
   @ApiProperty()
   @Expose()
-  city: string;
+  userWork: number;
 
   @ApiProperty()
   @Expose()
-  district: string;
+  contactUser: number;
 
   @ApiProperty()
   @Expose()
-  gender: number;
+  isLogin: number;
 
   @ApiProperty()
   @Expose()
-  avatarLink: string;
+  isDelete: number;
 
   @ApiProperty()
   @Expose()
-  birthday: Date;
-
-  @ApiPropertyOptional()
-  @Expose()
-  inviteCode?: string;
-
-  @ApiProperty()
-  @Expose()
-  role: string;
-
-  @ApiProperty()
-  @Expose()
-  isActive: number;
-
-  @ApiProperty()
-  @Expose()
-  createdAt: Date;
-
-  @ApiProperty()
-  @Expose()
-  updatedAt: Date;
-
-  @ApiPropertyOptional()
-  @Expose()
-  deletedAt?: Date;
+  accessToken: string;
 }

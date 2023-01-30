@@ -19,8 +19,9 @@ $ docker exec -it <container_name> npm run migration:revert
 #after delete migration file
 $ docker exec -it <container_name> npm run build
 
+#add library
+$ docker exec -it -u 0 <container-name> sh
 ```
-
 ## Description
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.

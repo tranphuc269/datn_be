@@ -10,6 +10,7 @@ import { RequestContext } from 'src/shared/request-context/request-context';
 import { UserWorkInput } from '../dtos/user-work-input.dto';
 import { UserService } from './user.service.spec';
 import { LoginInput } from '../dtos/login-input.dto';
+import { ChangeUserInfo } from '../dtos/change-user-input.dto';
 
 @Injectable()
 export class AuthService {
@@ -54,7 +55,7 @@ export class AuthService {
       );
     }
   }
-  public async login(user: LoginInput) {
+  public async login(ctx: RequestContext, user: LoginInput) {
     try {
       const userData = await this.userService.getByWorkEmail(user.email);
       const isPasswordCorrect = await bcrypt.compare(
@@ -69,6 +70,12 @@ export class AuthService {
       }
       user.password = undefined;
       const payload = { email: userData.email, sub: userData.id };
+      let newPayload = new ChangeUserInfo();
+      newPayload.accessToken = this.jwtService.sign(payload, {
+        secret: process.env.JWT_KEY,
+      });
+      newPayload.isLogin = 1;
+      await this.userService.updateUser(ctx, newPayload, userData.id);
       return {
         access_token: this.jwtService.sign(payload, {
           secret: process.env.JWT_KEY,

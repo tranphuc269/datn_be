@@ -8,7 +8,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../entities/user.entity';
 import { UserRepository } from '../repositories/user.repository';
 import { RequestContext } from 'src/shared/request-context/request-context';
-import { ChangeUserInfo } from '../dtos/change-personal-info.dto';
+import { ChangeUserPersonalInfo } from '../dtos/change-personal-info.dto';
 import { UserPersonalOutput } from '../dtos/user-personal-output.dto';
 import { plainToInstance } from 'class-transformer';
 import { UserInput } from '../dtos/register.dto';
@@ -25,6 +25,8 @@ import { ContactUserOutput } from '../dtos/contact-user-output.dto';
 import { ContactUserRepository } from '../repositories/contact-user.repository';
 import { ChangeUserWorkInfo } from '../dtos/change-work-info.dto';
 import { ChangeContactUserInfo } from '../dtos/change-contact-user.dto';
+import { UserOutput } from '../dtos/user-output.dto';
+import { ChangeUserInfo } from '../dtos/change-user-input.dto';
 @Injectable()
 export class UserService {
   constructor(
@@ -102,10 +104,22 @@ export class UserService {
       HttpStatus.NOT_FOUND
     );
   }
+  async updateUser(
+    ctx: RequestContext,
+    input: ChangeUserInfo,
+    id: number
+  ): Promise<UserOutput> {
+    const user = await this.userRepository.findOneBy({ id: id });
+    this.userRepository.merge(user, input);
 
+    const savedUser = await this.userRepository.save(user);
+    return plainToInstance(UserOutput, savedUser, {
+      excludeExtraneousValues: true,
+    });
+  }
   async updatePersonalUser(
     ctx: RequestContext,
-    input: ChangeUserInfo
+    input: ChangeUserPersonalInfo
   ): Promise<UserPersonalOutput> {
     let userId = input.id;
     const user = await this.userPersonalRepository.findOneBy({ id: userId });

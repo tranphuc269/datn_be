@@ -79,6 +79,29 @@ export class User {
   })
   contactUser: number;
 
+  @Column({
+    name: 'is_login',
+    type: 'int',
+    nullable: true,
+  })
+  isLogin: number;
+
+  @Column({
+    name: 'is_delete',
+    type: 'int',
+    nullable: true,
+  })
+  isDelete: number;
+
+  @Column({
+    name: 'access_token',
+    type: 'nvarchar',
+    length: 255,
+    charset: 'utf8',
+    nullable: true,
+  })
+  accessToken: string;
+
   @CreateDateColumn({
     name: 'created_at',
     nullable: true,
