@@ -1,5 +1,10 @@
 import * as bcrypt from 'bcrypt';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { UserInput } from '../dtos/register.dto';
@@ -11,7 +16,7 @@ import { UserWorkInput } from '../dtos/user-work-input.dto';
 import { UserService } from './user.service.spec';
 import { LoginInput } from '../dtos/login-input.dto';
 import { ChangeUserInfo } from '../dtos/change-user-input.dto';
-
+import * as jwt from 'jsonwebtoken';
 @Injectable()
 export class AuthService {
   constructor(
@@ -69,7 +74,7 @@ export class AuthService {
         );
       }
       user.password = undefined;
-      const payload = { email: userData.email, sub: userData.id };
+      const payload = { email: userData.email, id: userData.id };
       let newPayload = new ChangeUserInfo();
       newPayload.accessToken = this.jwtService.sign(payload, {
         secret: process.env.JWT_KEY,
@@ -77,9 +82,7 @@ export class AuthService {
       newPayload.isLogin = 1;
       await this.userService.updateUser(ctx, newPayload, userData.id);
       return {
-        access_token: this.jwtService.sign(payload, {
-          secret: process.env.JWT_KEY,
-        }),
+        access_token: newPayload.accessToken,
       };
     } catch (error) {
       console.log(error);
@@ -127,5 +130,13 @@ export class AuthService {
   }
   public getCookieForLogOut() {
     return `Authentication=; HttpOnly; Path=/; Max-Age=0`;
+  }
+  async verifyToken(accessToken: string) {
+    try {
+      const decoded = jwt.verify(accessToken, process.env.JWT_KEY);
+      return decoded;
+    } catch (error) {
+      throw new UnauthorizedException('Invalid token');
+    }
   }
 }

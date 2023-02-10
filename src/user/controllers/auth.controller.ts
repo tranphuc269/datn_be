@@ -21,6 +21,8 @@ import { UserTokenOutput } from '../dtos/user-token-output.dto';
 import { UserInput } from '../dtos/register.dto';
 import { ReqContext } from 'src/shared/request-context/req-context.decorator';
 import { RequestContext } from 'src/shared/request-context/request-context';
+import { access } from 'fs';
+import { MeInput } from '../dtos/me.dto';
 
 @Controller('authentication')
 export class AuthController {
@@ -62,5 +64,11 @@ export class AuthController {
     const user = request.user;
     user.password = undefined;
     return user;
+  }
+  @UseGuards(JwtAuthenticationGuard)
+  @Post('verify-token')
+  async verifyToken(@Body() accessToken: MeInput) {
+    const decoded = await this.authService.verifyToken(accessToken.accessToken);
+    return decoded;
   }
 }
