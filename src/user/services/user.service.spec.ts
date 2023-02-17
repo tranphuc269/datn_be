@@ -46,6 +46,7 @@ export class UserService {
     if (user) {
       return user;
     } else {
+      console.log('o day');
       throw new HttpException(
         'User with this id does not exist',
         HttpStatus.NOT_FOUND
@@ -99,6 +100,7 @@ export class UserService {
     if (user) {
       return user;
     }
+    console.log('o day 1');
     throw new HttpException(
       'User with this id does not exist',
       HttpStatus.NOT_FOUND
@@ -126,6 +128,9 @@ export class UserService {
     this.userPersonalRepository.merge(user, input);
 
     const savedUser = await this.userPersonalRepository.save(user);
+    let updateUser = new ChangeUserInfo();
+    updateUser.accountStatus = 1;
+    this.updateUser(ctx, updateUser, userId);
     return plainToInstance(UserPersonalOutput, savedUser, {
       excludeExtraneousValues: true,
     });

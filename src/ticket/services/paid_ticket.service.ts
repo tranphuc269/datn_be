@@ -14,7 +14,7 @@ import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import { TimeKeepingService } from '../../time_keeping/services/time_keeping.service';
 import { PaidUpdateInput } from '../dtos/update-paid-input.dto';
-import { PaidStatusUpdateInput } from '../dtos/status-ticket-input.dto';
+import { StatusUpdateInput } from '../dtos/status-ticket-input.dto';
 import { PaidTypeService } from './paidtype.service';
 import * as moment from 'moment';
 import { TimeKeepingUpdateInput } from 'src/time_keeping/dtos/update-timekeeping-input.dto';
@@ -34,7 +34,7 @@ export class PaidTicketService {
       const newPaidTicket = plainToInstance(PaidTicket, {
         ...paidTicketDto,
       });
-      const saveTicket = this.paidTicketRepository.save(newPaidTicket);
+      const saveTicket = await this.paidTicketRepository.save(newPaidTicket);
       return plainToInstance(PaidTicketOutput, saveTicket, {
         excludeExtraneousValues: true,
       });
@@ -75,7 +75,7 @@ export class PaidTicketService {
 
   async updatePaidTicketStatus(
     ctx: RequestContext,
-    status: PaidStatusUpdateInput,
+    status: StatusUpdateInput,
     id: number
   ): Promise<PaidTicketOutput> {
     const dbTicket = await this.paidTicketRepository.findOneBy({ id });
@@ -121,12 +121,11 @@ export class PaidTicketService {
   }
   async getPaidTicketRelatedMe(ctx: RequestContext, userId: number) {
     try {
-      const myPaidTickets = await this.paidTicketRepository
-        .createQueryBuilder('paid_tickets')
-        .where('paid_tickets.related_person_id =:userId', {
-          userId,
-        });
-      return myPaidTickets.getMany();
+      const myPaidTickets = await this.paidTicketRepository.findBy({
+        approverPersonId: userId,
+        ticketStatusId: 1,
+      });
+      return myPaidTickets;
     } catch (error) {
       console.log(error);
     }
@@ -157,7 +156,7 @@ export class PaidTicketService {
       await this.timeKeepingService.getRecordByDateAndUserId(
         ctx,
         dbTicket.createPersonId,
-        input.startTime.toString().substr(0, 10)
+        dbTicket.startTime.toString().substr(0, 10)
       );
     const noonTime = new Date(timekeepingRecord.createDate.setHours(12));
     const morningTime = new Date(timekeepingRecord.createDate.setHours(8));
@@ -225,6 +224,46 @@ export class PaidTicketService {
         : (morningAmount + afternoonAmount) / 8;
     // let amount = moment.duration(savedPaid.endTime.diff(savedPaid.startTime));
     // var hours = amount.asHours();
+    const updateRecordTimeKeeping =
+      await this.timeKeepingService.updateRecordTimeKeeping(ctx, payloadTicket);
+    return plainToInstance(PaidTicketOutput, savedPaid, {
+      excludeExtraneousValues: true,
+    });
+  }
+  async approveTickets(
+    ctx: RequestContext,
+    id: number
+  ): Promise<PaidTicketOutput> {
+    const dbTicket = await this.paidTicketRepository.findOneBy({ id });
+
+    const input = plainToInstance(
+      CreatePaidTicketInput,
+      { ticketStatusId: 2 },
+      {
+        excludeExtraneousValues: true,
+      }
+    );
+    const error = await validate(input, { skipUndefinedProperties: true });
+    if (error.length) {
+      throw new BadRequestException(error);
+    }
+    const paid = this.paidTicketRepository.merge(dbTicket, input);
+    const savedPaid = await this.paidTicketRepository.save(paid);
+    const timekeepingRecord =
+      await this.timeKeepingService.getRecordByDateAndUserId(
+        ctx,
+        dbTicket.createPersonId,
+        dbTicket.startTime.toISOString().substr(0, 10)
+      );
+    const morningTime = new Date(timekeepingRecord.createDate.setHours(8));
+    const eveningTime = new Date(timekeepingRecord.createDate.setHours(17, 30));
+    let payloadTicket = new TimeKeepingUpdateInput();
+    payloadTicket.id = timekeepingRecord.id;
+    payloadTicket.afternoonLeave = eveningTime;
+    payloadTicket.userId = timekeepingRecord.userId;
+    payloadTicket.morningJoin = morningTime;
+    payloadTicket.workAmountId = 1;
+    payloadTicket.workTypeId = 2;
     const updateRecordTimeKeeping =
       await this.timeKeepingService.updateRecordTimeKeeping(ctx, payloadTicket);
     return plainToInstance(PaidTicketOutput, savedPaid, {

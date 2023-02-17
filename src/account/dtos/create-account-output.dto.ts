@@ -1,34 +1,28 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
-export class PaidTicketOutput {
+export class AccountOutput {
   @Expose()
   @ApiProperty()
   createPersonId: number;
   @Expose()
   @ApiProperty()
-  id: number;
+  systemAdminId: number;
   @Expose()
   @ApiProperty()
-  relatedPersonId: number;
+  type: number;
   @Expose()
   @ApiProperty()
-  approverPersonId: number;
+  targetId: number;
   @Expose()
   @ApiProperty()
-  substitutePersonId: number;
+  newMemberEmail: string;
   @Expose()
   @ApiProperty()
-  ticketStatusId: number;
+  firstName: string;
   @Expose()
   @ApiProperty()
-  startTime: Date;
+  lastName: string;
   @Expose()
   @ApiProperty()
-  endTime: Date;
-  @Expose()
-  @ApiProperty()
-  reason: string;
-  @Expose()
-  @ApiProperty()
-  typePaidId: number;
+  isDeleted: boolean;
 }

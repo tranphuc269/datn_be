@@ -70,7 +70,7 @@ export class TimeKeeping {
 
   @Column({
     name: 'work_amount_id',
-    type: 'int',
+    type: 'float',
     nullable: true,
   })
   workAmountId: number;

@@ -10,7 +10,7 @@ import {
 } from 'class-validator';
 import { Expose, Type } from 'class-transformer';
 
-export class PaidStatusUpdateInput {
+export class StatusUpdateInput {
   @ApiPropertyOptional()
   @IsOptional()
   @IsNumber()

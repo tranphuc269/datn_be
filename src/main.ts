@@ -10,6 +10,7 @@ async function bootstrap() {
     .setTitle('Chung DATN')
     .setDescription('DATN of Chung Le Nguyen Thanh')
     .setVersion('1.0')
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
@@ -19,4 +20,3 @@ async function bootstrap() {
   await app.listen(3000);
 }
 bootstrap();
-

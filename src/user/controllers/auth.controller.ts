@@ -12,19 +12,17 @@ import {
 } from '@nestjs/common';
 import RequestWithUser from '../interface/requestWithUser.interface';
 import { AuthService } from '../services/auth.service';
-import { LocalAuthenticationGuard } from '../strategies/localAuthentication.guard';
 import { Response } from 'express';
 import { JwtAuthenticationGuard } from '../strategies/jwt-authentication.guard';
 import { LoginInput } from '../dtos/login-input.dto';
-import { plainToInstance } from 'class-transformer';
-import { UserTokenOutput } from '../dtos/user-token-output.dto';
 import { UserInput } from '../dtos/register.dto';
 import { ReqContext } from 'src/shared/request-context/req-context.decorator';
 import { RequestContext } from 'src/shared/request-context/request-context';
-import { access } from 'fs';
 import { MeInput } from '../dtos/me.dto';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('authentication')
+@ApiBearerAuth()
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
   @Post('register')
@@ -65,7 +63,6 @@ export class AuthController {
     user.password = undefined;
     return user;
   }
-  @UseGuards(JwtAuthenticationGuard)
   @Post('verify-token')
   async verifyToken(@Body() accessToken: MeInput) {
     const decoded = await this.authService.verifyToken(accessToken.accessToken);

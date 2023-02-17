@@ -6,8 +6,9 @@ import {
   HttpStatus,
   Param,
   Post,
+  UseGuards,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { BaseApiResponse } from 'src/shared/dtos/base-api-response.dto';
 import { ReqContext } from 'src/shared/request-context/req-context.decorator';
 import { RequestContext } from 'src/shared/request-context/request-context';
@@ -21,11 +22,12 @@ import { UserWorkOutput } from '../dtos/user-work-output.dto';
 import { ContactUserInput } from '../dtos/contact-user-input.dto';
 import { ContactUserOutput } from '../dtos/contact-user-output.dto';
 import { ChangeContactUserInfo } from '../dtos/change-contact-user.dto';
-import { profile } from 'console';
 import { UserOutput } from '../dtos/user-output.dto';
 import { ChangeUserInfo } from '../dtos/change-user-input.dto';
+import { JwtAuthenticationGuard } from '../strategies/jwt-authentication.guard';
 @Controller('users')
 @ApiTags('users')
+@ApiBearerAuth()
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
@@ -34,6 +36,7 @@ export class UserController {
     return 'hello';
   }
 
+  @UseGuards(JwtAuthenticationGuard)
   @Get('profile-info/:id')
   async getProfileInfo(
     @ReqContext() ctx: RequestContext,
@@ -54,6 +57,11 @@ export class UserController {
         HttpStatus.NOT_FOUND
       );
     }
+  }
+  @UseGuards(JwtAuthenticationGuard)
+  @Get('me')
+  async getMe(@ReqContext() ctx: RequestContext) {
+    return ctx.user;
   }
 
   @Post('create-personal')
@@ -167,6 +175,17 @@ export class UserController {
     @Body() input: ChangeContactUserInfo
   ): Promise<BaseApiResponse<ContactUserOutput>> {
     const data = await this.userService.updateContactUser(ctx, input);
+    return { data };
+  }
+
+  @Post('delete/:id')
+  async deleteUser(
+    @ReqContext() ctx: RequestContext,
+    @Body() input: ChangeUserInfo,
+    @Param('id') id: number
+  ): Promise<BaseApiResponse<UserOutput>> {
+    const data = await this.userService.updateUser(ctx, input, id);
+
     return { data };
   }
 }

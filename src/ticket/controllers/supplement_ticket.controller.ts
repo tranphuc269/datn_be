@@ -67,6 +67,18 @@ export class SupplementTicketController {
     );
     return { data };
   }
+  @Get('my-supplement-related/:id')
+  async getAllSupplementTicketRelatedMe(
+    @ReqContext() ctx: RequestContext,
+    @Param('id') userId: number
+  ): Promise<BaseApiResponse<SupplementTicketOutput[]>> {
+    const data =
+      await this.supplementTicketService.getAllSupplementTicketRelatedMe(
+        ctx,
+        userId
+      );
+    return { data };
+  }
   @Get('supplement/:id')
   async getSupplementTicketById(
     @ReqContext() ctx: RequestContext,
@@ -90,6 +102,34 @@ export class SupplementTicketController {
       userId,
       statusId
     );
+    return { data };
+  }
+  @Put('approve-ticket/:id')
+  @HttpCode(HttpStatus.OK)
+  async approveTicket(
+    @ReqContext() ctx: RequestContext,
+    @Body() input: UpdateSupplementInput,
+    @Param('id') id: number
+  ): Promise<BaseApiResponse<SupplementTicketOutput>> {
+    const data = await this.supplementTicketService.approveTicket(
+      ctx,
+      input,
+      id
+    );
+    return { data };
+  }
+  @Put('denied-ticket/:id')
+  @HttpCode(HttpStatus.OK)
+  async deniedTicket(
+    @ReqContext() ctx: RequestContext,
+    @Param('id') id: number
+  ): Promise<BaseApiResponse<SupplementTicketOutput>> {
+    const data =
+      await this.supplementTicketService.updateSupplementTicketStatus(
+        ctx,
+        { ticketStatusId: 3 },
+        id
+      );
     return { data };
   }
 }

@@ -7,12 +7,14 @@ import { ConfigurationModule } from './config/configuration.module';
 import { UserModule } from './user/user.module';
 import { TimeKeepingModule } from './time_keeping/time_keeping.module';
 import { TicketModule } from './ticket/ticket.module';
+import { AccountModule } from './account/account.module';
 @Module({
   imports: [
     ConfigurationModule,
     UserModule,
     TimeKeepingModule,
     TicketModule,
+    AccountModule,
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],

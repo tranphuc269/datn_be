@@ -14,7 +14,6 @@ export class UserRepository extends Repository<User> {
   }
   async getByEmail(email: string): Promise<User> {
     const entity = await this.find({ [email]: email });
-    console.log(entity);
     return;
   }
 }

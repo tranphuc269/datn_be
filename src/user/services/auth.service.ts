@@ -17,6 +17,7 @@ import { UserService } from './user.service.spec';
 import { LoginInput } from '../dtos/login-input.dto';
 import { ChangeUserInfo } from '../dtos/change-user-input.dto';
 import * as jwt from 'jsonwebtoken';
+import { ApiBearerAuth } from '@nestjs/swagger';
 @Injectable()
 export class AuthService {
   constructor(
@@ -67,29 +68,35 @@ export class AuthService {
         user.password,
         userData.password
       );
-      if (!isPasswordCorrect) {
-        throw new HttpException(
-          'Wrong credentials provided',
-          HttpStatus.BAD_REQUEST
-        );
+      if (!isPasswordCorrect || userData.isDelete) {
+        return {
+          code: 500,
+          msg: userData.isDelete ? 'is_locked' : 'login_failed',
+        };
+      } else {
+        user.password = undefined;
+        const payload = {
+          email: userData.email,
+          id: userData.id,
+          role: userData.role,
+          isActive: userData.accountStatus,
+        };
+        let newPayload = new ChangeUserInfo();
+        newPayload.accessToken = this.jwtService.sign(payload, {
+          secret: process.env.JWT_KEY,
+        });
+        newPayload.isLogin = 1;
+        await this.userService.updateUser(ctx, newPayload, userData.id);
+        return {
+          access_token: newPayload.accessToken,
+        };
       }
-      user.password = undefined;
-      const payload = { email: userData.email, id: userData.id };
-      let newPayload = new ChangeUserInfo();
-      newPayload.accessToken = this.jwtService.sign(payload, {
-        secret: process.env.JWT_KEY,
-      });
-      newPayload.isLogin = 1;
-      await this.userService.updateUser(ctx, newPayload, userData.id);
-      return {
-        access_token: newPayload.accessToken,
-      };
     } catch (error) {
-      console.log(error);
       throw new HttpException(
-        'Wrong credentials provided',
+        'Wrong credentials',
         HttpStatus.BAD_REQUEST
       );
+      
     }
   }
   public async getAuthenticatedUser(email: string, plainTextPassword: string) {
@@ -123,7 +130,6 @@ export class AuthService {
   public getCookieWithJwtToken(userId: number) {
     const payload: TokenPayload = { userId };
     const token = this.jwtService.sign(payload);
-    console.log(payload);
     return `Authentication=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get(
       'JWT_EXPIRATION_TIME'
     )}`;

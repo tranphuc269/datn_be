@@ -15,6 +15,9 @@ import { SupplementTicket } from '../entities/supplement_ticket.entity';
 import { CreateSupplementTicketInput } from '../dtos/create-supplement-input.dto';
 import { SupplementTicketOutput } from '../dtos/create-supplement-output.dto';
 import { UpdateSupplementInput } from '../dtos/update-supplement-input.dto';
+import * as moment from 'moment';
+import { TimeKeepingUpdateInput } from 'src/time_keeping/dtos/update-timekeeping-input.dto';
+import { StatusUpdateInput } from '../dtos/status-ticket-input.dto';
 @Injectable()
 export class SupplementTicketService {
   constructor(
@@ -68,7 +71,7 @@ export class SupplementTicketService {
     }
 
     const brand = this.supplementTicketRepository.merge(dbTicket, input);
-    if (input.ticketStatusId === 2) {
+    if (input.ticketStatusId === 1) {
       let newRecordTimeKeeping = new TimeKeepingInput();
       newRecordTimeKeeping.userId = rawInput.createPersonId;
       newRecordTimeKeeping.workAmountId = 3;
@@ -95,6 +98,17 @@ export class SupplementTicketService {
       console.log(error);
     }
   }
+  async getAllSupplementTicketRelatedMe(ctx: RequestContext, userId: number) {
+    try {
+      const mySupplementTickets = await this.supplementTicketRepository.findBy({
+        approverPersonId: userId,
+        ticketStatusId: 1,
+      });
+      return mySupplementTickets;
+    } catch (error) {
+      console.log(error);
+    }
+  }
   async getSupplementTicketByStatus(
     ctx: RequestContext,
     userId: number,
@@ -113,5 +127,81 @@ export class SupplementTicketService {
     } catch (error) {
       console.log(error);
     }
+  }
+  async approveTicket(
+    ctx: RequestContext,
+    rawInput: UpdateSupplementInput,
+    id: number
+  ): Promise<SupplementTicketOutput> {
+    const dbTicket = await this.supplementTicketRepository.findOneBy({ id });
+    console.log(rawInput);
+    const input = plainToInstance(CreateSupplementTicketInput, rawInput, {
+      excludeExtraneousValues: true,
+    });
+    const error = await validate(input, { skipUndefinedProperties: true });
+    if (error.length) {
+      throw new BadRequestException(error);
+    }
+    const paid = this.supplementTicketRepository.merge(dbTicket, input);
+    const savedPaid = await this.supplementTicketRepository.save(paid);
+    const timekeepingRecord =
+      await this.timeKeepingService.getRecordByDateAndUserId(
+        ctx,
+        dbTicket.createPersonId,
+        dbTicket.startTime.toISOString().substr(0, 10)
+      );
+
+    const startMinutes =
+      (dbTicket.startTime.getHours() * 60 + dbTicket.startTime.getMinutes()) /
+      60;
+    const endMinutes =
+      (dbTicket.endTime.getHours() * 60 + dbTicket.endTime.getMinutes()) / 60;
+    let morningAmount = 0;
+    let afternoonAmount = 0;
+    let payloadTicket = new TimeKeepingUpdateInput();
+    if (endMinutes < 12) {
+      morningAmount = 0.5;
+      payloadTicket.morningJoin = dbTicket.startTime;
+      payloadTicket.morningLeave = dbTicket.endTime;
+    }
+    if (startMinutes >= 12) {
+      afternoonAmount = 0.5;
+      payloadTicket.afternoonJoin = dbTicket.startTime;
+      payloadTicket.afternoonLeave = dbTicket.endTime;
+    }
+    if (startMinutes <= 12 && endMinutes >= 13.5) {
+      morningAmount = 0.5;
+      afternoonAmount = 0.5;
+      payloadTicket.morningJoin = dbTicket.startTime;
+      payloadTicket.afternoonLeave = dbTicket.endTime;
+    }
+    payloadTicket.workAmountId = morningAmount + afternoonAmount;
+    payloadTicket.workTypeId = 3;
+    payloadTicket.id = timekeepingRecord.id;
+    // let amount = moment.duration(savedPaid.endTime.diff(savedPaid.startTime));
+    // var hours = amount.asHours();
+    const updateRecordTimeKeeping =
+      await this.timeKeepingService.updateRecordTimeKeeping(ctx, payloadTicket);
+    console.log(updateRecordTimeKeeping);
+    return plainToInstance(SupplementTicketOutput, savedPaid, {
+      excludeExtraneousValues: true,
+    });
+  }
+  async updateSupplementTicketStatus(
+    ctx: RequestContext,
+    status: StatusUpdateInput,
+    id: number
+  ): Promise<SupplementTicketOutput> {
+    const dbTicket = await this.supplementTicketRepository.findOneBy({ id });
+
+    const input = plainToInstance(CreateSupplementTicketInput, status, {
+      excludeExtraneousValues: true,
+    });
+    const paid = this.supplementTicketRepository.merge(dbTicket, input);
+    const savedPaid = await this.supplementTicketRepository.save(paid);
+
+    return plainToInstance(SupplementTicketOutput, savedPaid, {
+      excludeExtraneousValues: true,
+    });
   }
 }

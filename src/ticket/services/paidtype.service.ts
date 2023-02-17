@@ -18,7 +18,7 @@ import { ErrCategoryCode, ErrDetailCode } from 'src/shared/constant/errors';
 import { TimeKeepingService } from '../../time_keeping/services/time_keeping.service';
 import { TimeKeepingInput } from 'src/time_keeping/dtos/timekeeping-input.dto';
 import { PaidUpdateInput } from '../dtos/update-paid-input.dto';
-import { PaidStatusUpdateInput } from '../dtos/status-ticket-input.dto';
+import { StatusUpdateInput } from '../dtos/status-ticket-input.dto';
 import { PaidType } from '../entities/paid_type.entity';
 import { PaidTypeRepository } from '../repositories/paid_type.repository';
 @Injectable()

@@ -11,11 +11,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { TimeKeeping } from '../../time_keeping/entities/time_keeping.entity';
-import { PaidTicket } from '../../ticket/entities/paid_ticket.entity';
-import { PaidAmount } from '../../ticket/entities/paid_amount.entity';
-import { SupplementTicket } from '../../ticket/entities/supplement_ticket.entity';
-import { OvertimeTicket } from '../../ticket/entities/overtime_ticket.entity';
 import { User } from './user.entity';
 
 @Entity('user_personals')

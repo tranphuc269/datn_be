@@ -14,7 +14,7 @@ import { ReqContext } from '../../shared/request-context/req-context.decorator';
 import { RequestContext } from '../../shared/request-context/request-context';
 import { CreatePaidTicketInput } from '../dtos/create-paid-input.dto';
 import { PaidTicketOutput } from '../dtos/create-paid-output.dto';
-import { PaidStatusUpdateInput } from '../dtos/status-ticket-input.dto';
+import { StatusUpdateInput } from '../dtos/status-ticket-input.dto';
 import { PaidUpdateInput } from '../dtos/update-paid-input.dto';
 import { PaidTicketService } from '../services/paid_ticket.service';
 @Controller('paid_tickets')
@@ -52,22 +52,20 @@ export class PaidTicketController {
   @HttpCode(HttpStatus.OK)
   async approveTicket(
     @ReqContext() ctx: RequestContext,
-    @Body() input: PaidUpdateInput,
     @Param('id') id: number
   ): Promise<BaseApiResponse<PaidTicketOutput>> {
-    const data = await this.paidTicketService.approveTicket(ctx, input, id);
+    const data = await this.paidTicketService.approveTickets(ctx, id);
     return { data };
   }
   @Put('denied-ticket/:id')
   @HttpCode(HttpStatus.OK)
   async deniedTicket(
     @ReqContext() ctx: RequestContext,
-    @Body() status: PaidStatusUpdateInput,
     @Param('id') id: number
   ): Promise<BaseApiResponse<PaidTicketOutput>> {
     const data = await this.paidTicketService.updatePaidTicketStatus(
       ctx,
-      status,
+      { ticketStatusId: 3 },
       id
     );
     return { data };
