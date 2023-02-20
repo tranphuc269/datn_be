@@ -21,6 +21,7 @@ import { UserPersonal } from './user-personal.entity';
 import { UserWork } from './user-work.entity';
 import { Role } from './role.entity';
 import { ContactUser } from './contact-user.entity';
+import { AccountStatus } from './account-status.entity';
 
 @Entity('users')
 export class User {
@@ -164,4 +165,9 @@ export class User {
     name: 'role',
   })
   roleId: Role;
+  @ManyToOne(() => AccountStatus, (b) => b.users)
+  @JoinColumn({
+    name: 'account_status',
+  })
+  accountStatusId: AccountStatus;
 }

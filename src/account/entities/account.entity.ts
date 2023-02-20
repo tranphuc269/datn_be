@@ -11,6 +11,7 @@ import {
   ManyToMany,
   JoinTable,
 } from 'typeorm';
+import { RequestType } from './request-type.entity';
 
 @Entity('account_request')
 export class Account {
@@ -38,7 +39,7 @@ export class Account {
     nullable: true,
   })
   type: number;
-  
+
   @Column({
     name: 'target_id',
     type: 'int',
@@ -94,4 +95,10 @@ export class Account {
     nullable: true,
   })
   deletedAt?: Date;
+
+  @ManyToOne(() => RequestType, (b) => b.accountRequest)
+  @JoinColumn({
+    name: 'account_request_type',
+  })
+  requestType: RequestType;
 }
