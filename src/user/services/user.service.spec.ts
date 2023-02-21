@@ -129,7 +129,7 @@ export class UserService {
 
     const savedUser = await this.userPersonalRepository.save(user);
     let updateUser = new ChangeUserInfo();
-    updateUser.accountStatus = 1;
+    updateUser.accountStatus = 2;
     this.updateUser(ctx, updateUser, userId);
     return plainToInstance(UserPersonalOutput, savedUser, {
       excludeExtraneousValues: true,

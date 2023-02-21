@@ -92,11 +92,8 @@ export class AuthService {
         };
       }
     } catch (error) {
-      throw new HttpException(
-        'Wrong credentials',
-        HttpStatus.BAD_REQUEST
-      );
-      
+      console.log(error)
+      throw new HttpException('Wrong credentials', HttpStatus.BAD_REQUEST);
     }
   }
   public async getAuthenticatedUser(email: string, plainTextPassword: string) {
