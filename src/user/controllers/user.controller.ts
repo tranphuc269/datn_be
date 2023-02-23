@@ -25,11 +25,16 @@ import { ChangeContactUserInfo } from '../dtos/change-contact-user.dto';
 import { UserOutput } from '../dtos/user-output.dto';
 import { ChangeUserInfo } from '../dtos/change-user-input.dto';
 import { JwtAuthenticationGuard } from '../strategies/jwt-authentication.guard';
+import { MailService } from '../services/mail.service';
+import { MailInput } from '../dtos/mail.dto';
 @Controller('users')
 @ApiTags('users')
 @ApiBearerAuth()
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly mailService: MailService
+  ) {}
 
   @Get('hello')
   async helloWorld(): Promise<string> {
@@ -63,7 +68,7 @@ export class UserController {
   async getMe(@ReqContext() ctx: RequestContext) {
     return ctx.user;
   }
-
+  @UseGuards(JwtAuthenticationGuard)
   @Post('create-personal')
   async createPersonalInfo(
     @ReqContext() ctx: RequestContext,
@@ -73,7 +78,7 @@ export class UserController {
 
     return { data };
   }
-
+  @UseGuards(JwtAuthenticationGuard)
   @Get('user-personal-info/:id')
   async getPersonalInfo(
     @ReqContext() ctx: RequestContext,
@@ -89,6 +94,8 @@ export class UserController {
       );
     }
   }
+
+  @UseGuards(JwtAuthenticationGuard)
   @Get('user-work-info/:id')
   async getWorkInfo(
     @ReqContext() ctx: RequestContext,
@@ -104,7 +111,7 @@ export class UserController {
       );
     }
   }
-
+  @UseGuards(JwtAuthenticationGuard)
   @Get('user-contact-info/:id')
   async getContactInfo(
     @ReqContext() ctx: RequestContext,
@@ -121,6 +128,7 @@ export class UserController {
     }
   }
 
+  @UseGuards(JwtAuthenticationGuard)
   @Post('create-work')
   async createWorkInfo(
     @ReqContext() ctx: RequestContext,
@@ -130,6 +138,8 @@ export class UserController {
 
     return { data };
   }
+
+  @UseGuards(JwtAuthenticationGuard)
   @Post('create-contact')
   async createContactInfo(
     @ReqContext() ctx: RequestContext,
@@ -140,6 +150,7 @@ export class UserController {
     return { data };
   }
 
+  @UseGuards(JwtAuthenticationGuard)
   @Post('change-user-info/:id')
   async changeUserInfo(
     @ReqContext() ctx: RequestContext,
@@ -150,6 +161,8 @@ export class UserController {
 
     return { data };
   }
+
+  @UseGuards(JwtAuthenticationGuard)
   @Post('change-personal')
   async changePersonalInfo(
     @ReqContext() ctx: RequestContext,
@@ -159,7 +172,7 @@ export class UserController {
 
     return { data };
   }
-
+  @UseGuards(JwtAuthenticationGuard)
   @Post('change-work')
   async changeWorkInfo(
     @ReqContext() ctx: RequestContext,
@@ -169,6 +182,7 @@ export class UserController {
     return { data };
   }
 
+  @UseGuards(JwtAuthenticationGuard)
   @Post('change-contact')
   async changeContactInfo(
     @ReqContext() ctx: RequestContext,
@@ -178,6 +192,7 @@ export class UserController {
     return { data };
   }
 
+  @UseGuards(JwtAuthenticationGuard)
   @Post('delete/:id')
   async deleteUser(
     @ReqContext() ctx: RequestContext,
@@ -187,5 +202,11 @@ export class UserController {
     const data = await this.userService.updateUser(ctx, input, id);
 
     return { data };
+  }
+  @UseGuards(JwtAuthenticationGuard)
+  @Post('send')
+  async sendMail(@Body() body: MailInput) {
+    await this.mailService.sendMail(body);
+    return { message: 'Email sent' };
   }
 }

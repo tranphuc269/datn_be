@@ -7,18 +7,20 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { BaseApiResponse } from 'src/shared/dtos/base-api-response.dto';
+import { JwtAuthenticationGuard } from 'src/user/strategies/jwt-authentication.guard';
 import { ReqContext } from '../../shared/request-context/req-context.decorator';
 import { RequestContext } from '../../shared/request-context/request-context';
 import { CreatePaidTicketInput } from '../dtos/create-paid-input.dto';
 import { PaidTicketOutput } from '../dtos/create-paid-output.dto';
-import { StatusUpdateInput } from '../dtos/status-ticket-input.dto';
 import { PaidUpdateInput } from '../dtos/update-paid-input.dto';
 import { PaidTicketService } from '../services/paid_ticket.service';
 @Controller('paid_tickets')
 @ApiTags('paid_tickets')
+@ApiBearerAuth()
 export class PaidTicketController {
   constructor(private readonly paidTicketService: PaidTicketService) {}
 
@@ -27,6 +29,7 @@ export class PaidTicketController {
     return 'hello';
   }
 
+  @UseGuards(JwtAuthenticationGuard)
   @Post('new-paid-ticket')
   @HttpCode(HttpStatus.CREATED)
   async createPaidTicket(
@@ -37,6 +40,7 @@ export class PaidTicketController {
     return { data, meta: {} };
   }
 
+  @UseGuards(JwtAuthenticationGuard)
   @Put(':id')
   @HttpCode(HttpStatus.OK)
   async updateTicket(
@@ -48,6 +52,7 @@ export class PaidTicketController {
     return { data };
   }
 
+  @UseGuards(JwtAuthenticationGuard)
   @Put('approve-ticket/:id')
   @HttpCode(HttpStatus.OK)
   async approveTicket(
@@ -57,13 +62,15 @@ export class PaidTicketController {
     const data = await this.paidTicketService.approveTickets(ctx, id);
     return { data };
   }
+
+  @UseGuards(JwtAuthenticationGuard)
   @Put('denied-ticket/:id')
   @HttpCode(HttpStatus.OK)
   async deniedTicket(
     @ReqContext() ctx: RequestContext,
     @Param('id') id: number
   ): Promise<BaseApiResponse<PaidTicketOutput>> {
-    const data = await this.paidTicketService.updatePaidTicketStatus(
+    const data = await this.paidTicketService.deniedTicket(
       ctx,
       { ticketStatusId: 3 },
       id
@@ -71,6 +78,7 @@ export class PaidTicketController {
     return { data };
   }
 
+  @UseGuards(JwtAuthenticationGuard)
   @Get('my-paid/:id')
   async getAllMyPaidTicket(
     @ReqContext() ctx: RequestContext,
@@ -80,12 +88,14 @@ export class PaidTicketController {
     return { data };
   }
 
+  @UseGuards(JwtAuthenticationGuard)
   @Get('paid-type')
   async getPaidTicketType(@ReqContext() ctx: RequestContext) {
     const data = await this.paidTicketService.getPaidTicketType(ctx);
     return { data };
   }
 
+  @UseGuards(JwtAuthenticationGuard)
   @Get('paid-status/:status_id/:id')
   async getMyPaidTicketByStatus(
     @ReqContext() ctx: RequestContext,
@@ -99,6 +109,8 @@ export class PaidTicketController {
     );
     return { data };
   }
+
+  @UseGuards(JwtAuthenticationGuard)
   @Get('paid-ticket/:id')
   async getPaidTicketById(
     @ReqContext() ctx: RequestContext,
@@ -107,6 +119,8 @@ export class PaidTicketController {
     const data = await this.paidTicketService.getPaidTicketById(ctx, paidId);
     return { data };
   }
+
+  @UseGuards(JwtAuthenticationGuard)
   @Get('paid-ticket-related/:id')
   async getPaidTicketRelatedMe(
     @ReqContext() ctx: RequestContext,

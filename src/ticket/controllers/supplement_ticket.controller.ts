@@ -7,9 +7,11 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { BaseApiResponse } from 'src/shared/dtos/base-api-response.dto';
+import { JwtAuthenticationGuard } from 'src/user/strategies/jwt-authentication.guard';
 import { ReqContext } from '../../shared/request-context/req-context.decorator';
 import { RequestContext } from '../../shared/request-context/request-context';
 import { CreateSupplementTicketInput } from '../dtos/create-supplement-input.dto';
@@ -18,6 +20,7 @@ import { UpdateSupplementInput } from '../dtos/update-supplement-input.dto';
 import { SupplementTicketService } from '../services/supplement_ticket.service';
 @Controller('supplement_tickets')
 @ApiTags('supplement_tickets')
+@ApiBearerAuth()
 export class SupplementTicketController {
   constructor(
     private readonly supplementTicketService: SupplementTicketService
@@ -28,6 +31,7 @@ export class SupplementTicketController {
     return 'hello';
   }
 
+  @UseGuards(JwtAuthenticationGuard)
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async createSupplementTicket(
@@ -41,6 +45,7 @@ export class SupplementTicketController {
     return { data, meta: {} };
   }
 
+  @UseGuards(JwtAuthenticationGuard)
   @Put(':id')
   @HttpCode(HttpStatus.OK)
   async updateTicket(
@@ -56,6 +61,7 @@ export class SupplementTicketController {
     return { data };
   }
 
+  @UseGuards(JwtAuthenticationGuard)
   @Get('my-supplement/:id')
   async getAllMySupplementTicket(
     @ReqContext() ctx: RequestContext,
@@ -67,6 +73,8 @@ export class SupplementTicketController {
     );
     return { data };
   }
+
+  @UseGuards(JwtAuthenticationGuard)
   @Get('my-supplement-related/:id')
   async getAllSupplementTicketRelatedMe(
     @ReqContext() ctx: RequestContext,
@@ -79,6 +87,8 @@ export class SupplementTicketController {
       );
     return { data };
   }
+
+  @UseGuards(JwtAuthenticationGuard)
   @Get('supplement/:id')
   async getSupplementTicketById(
     @ReqContext() ctx: RequestContext,
@@ -91,6 +101,7 @@ export class SupplementTicketController {
     return { data };
   }
 
+  @UseGuards(JwtAuthenticationGuard)
   @Get('supplement-status/:status_id/:id')
   async getMySupplementTicketByStatus(
     @ReqContext() ctx: RequestContext,
@@ -104,6 +115,8 @@ export class SupplementTicketController {
     );
     return { data };
   }
+
+  @UseGuards(JwtAuthenticationGuard)
   @Put('approve-ticket/:id')
   @HttpCode(HttpStatus.OK)
   async approveTicket(
@@ -118,18 +131,19 @@ export class SupplementTicketController {
     );
     return { data };
   }
+
+  @UseGuards(JwtAuthenticationGuard)
   @Put('denied-ticket/:id')
   @HttpCode(HttpStatus.OK)
   async deniedTicket(
     @ReqContext() ctx: RequestContext,
     @Param('id') id: number
   ): Promise<BaseApiResponse<SupplementTicketOutput>> {
-    const data =
-      await this.supplementTicketService.updateSupplementTicketStatus(
-        ctx,
-        { ticketStatusId: 3 },
-        id
-      );
+    const data = await this.supplementTicketService.deniedTicket(
+      ctx,
+      { ticketStatusId: 3 },
+      id
+    );
     return { data };
   }
 }

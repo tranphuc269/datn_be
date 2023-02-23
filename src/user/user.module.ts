@@ -15,6 +15,7 @@ import { ContactUser } from './entities/contact-user.entity';
 import { UserWorkRepository } from './repositories/user-work.repository';
 import { ContactUserRepository } from './repositories/contact-user.repository';
 import { UserService } from './services/user.service.spec';
+import { MailService } from './services/mail.service';
 @Module({
   imports: [ConfigModule, TypeOrmModule.forFeature([User, UserPersonal, UserWork, ContactUser, UserPersonalRepository])],
   controllers: [UserController, AuthController],
@@ -25,6 +26,7 @@ import { UserService } from './services/user.service.spec';
     AuthService,
     UserPersonalRepository,
     UserWorkRepository,
+    MailService,
     ContactUserRepository
   ],
   providers: [
@@ -35,6 +37,7 @@ import { UserService } from './services/user.service.spec';
     UserWorkRepository,
     ContactUserRepository,
     AuthService,
+    MailService,
     LocalStrategy,
   ],
 })

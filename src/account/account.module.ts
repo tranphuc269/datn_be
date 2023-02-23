@@ -9,12 +9,15 @@ import { AccountService } from './services/account.service';
 import { AccountController } from './controllers/account.controller';
 import { AccountRepository } from './repositories/account.repository';
 import { Account } from './entities/account.entity';
+import { UserModule } from 'src/user/user.module';
+import { User } from 'src/user/entities/user.entity';
 
 @Module({
   imports: [
     ConfigModule,
     TimeKeepingModule,
-    TypeOrmModule.forFeature([Account, TimeKeeping]),
+    UserModule,
+    TypeOrmModule.forFeature([Account, TimeKeeping, User]),
   ],
   controllers: [AccountController],
   providers: [

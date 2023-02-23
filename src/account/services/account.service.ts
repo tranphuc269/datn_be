@@ -15,10 +15,12 @@ import { plainToInstance } from 'class-transformer';
 import { AccountOutput } from '../dtos/create-account-output.dto';
 import { UpdateAccountInput } from '../dtos/update-account-input.dto';
 import { validate } from 'class-validator';
+import { UserService } from 'src/user/services/user.service.spec';
 @Injectable()
 export class AccountService {
   constructor(
     private readonly timeKeepingService: TimeKeepingService,
+    private readonly userService: UserService,
     @InjectRepository(Account)
     private readonly accountRepository: AccountRepository
   ) {}
@@ -30,6 +32,13 @@ export class AccountService {
       const newAccountRequest = plainToInstance(Account, {
         ...accountDto,
       });
+      const user = await this.userService.getById(
+        newAccountRequest.systemAdminId
+      );
+
+      if (user.role !== 4) {
+        return;
+      }
       const saveTicket = await this.accountRepository.save(newAccountRequest);
       return plainToInstance(AccountOutput, saveTicket, {
         excludeExtraneousValues: true,
@@ -45,7 +54,6 @@ export class AccountService {
     id: number
   ): Promise<AccountOutput> {
     const dbTicket = await this.accountRepository.findOneBy({ id });
-
     const input = plainToInstance(CreateAccountTicketInput, rawInput, {
       excludeExtraneousValues: true,
     });

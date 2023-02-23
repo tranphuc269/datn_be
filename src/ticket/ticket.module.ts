@@ -17,17 +17,22 @@ import { SupplementTicketService } from './services/supplement_ticket.service';
 import { PaidTypeRepository } from './repositories/paid_type.repository';
 import { PaidTypeService } from './services/paidtype.service';
 import { PaidType } from './entities/paid_type.entity';
+import { UserService } from '../user/services/user.service.spec';
+import { User } from '../user/entities/user.entity';
+import { UserModule } from '../user/user.module';
 
 @Module({
   imports: [
     ConfigModule,
     TimeKeepingModule,
+    UserModule,
     TypeOrmModule.forFeature([
       PaidTicket,
       OvertimeTicket,
       SupplementTicket,
       TimeKeeping,
       PaidType,
+      User,
     ]),
   ],
   controllers: [PaidTicketController, SupplementTicketController],

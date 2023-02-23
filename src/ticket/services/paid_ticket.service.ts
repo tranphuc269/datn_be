@@ -18,11 +18,13 @@ import { StatusUpdateInput } from '../dtos/status-ticket-input.dto';
 import { PaidTypeService } from './paidtype.service';
 import * as moment from 'moment';
 import { TimeKeepingUpdateInput } from 'src/time_keeping/dtos/update-timekeeping-input.dto';
+import { UserService } from '../../user/services/user.service.spec';
 @Injectable()
 export class PaidTicketService {
   constructor(
     private readonly timeKeepingService: TimeKeepingService,
     private readonly paidTypeService: PaidTypeService,
+    private readonly userService: UserService,
     @InjectRepository(PaidTicket)
     private readonly paidTicketRepository: PaidTicketRepository
   ) {}
@@ -31,6 +33,13 @@ export class PaidTicketService {
     paidTicketDto: CreatePaidTicketInput
   ) {
     try {
+      const user = await this.userService.getById(
+        paidTicketDto.approverPersonId
+      );
+
+      if (user.role !== 3) {
+        return;
+      }
       const newPaidTicket = plainToInstance(PaidTicket, {
         ...paidTicketDto,
       });
@@ -143,6 +152,12 @@ export class PaidTicketService {
   ): Promise<PaidTicketOutput> {
     const dbTicket = await this.paidTicketRepository.findOneBy({ id });
 
+    const user = await this.userService.getById(dbTicket.approverPersonId);
+
+    if (user.role !== 3) {
+      return;
+    }
+
     const input = plainToInstance(CreatePaidTicketInput, rawInput, {
       excludeExtraneousValues: true,
     });
@@ -222,8 +237,6 @@ export class PaidTicketService {
       morningAmount + afternoonAmount > 8
         ? 1
         : (morningAmount + afternoonAmount) / 8;
-    // let amount = moment.duration(savedPaid.endTime.diff(savedPaid.startTime));
-    // var hours = amount.asHours();
     const updateRecordTimeKeeping =
       await this.timeKeepingService.updateRecordTimeKeeping(ctx, payloadTicket);
     return plainToInstance(PaidTicketOutput, savedPaid, {
@@ -235,7 +248,11 @@ export class PaidTicketService {
     id: number
   ): Promise<PaidTicketOutput> {
     const dbTicket = await this.paidTicketRepository.findOneBy({ id });
+    const user = await this.userService.getById(dbTicket.approverPersonId);
 
+    if (user.role !== 3) {
+      return;
+    }
     const input = plainToInstance(
       CreatePaidTicketInput,
       { ticketStatusId: 2 },
@@ -269,5 +286,18 @@ export class PaidTicketService {
     return plainToInstance(PaidTicketOutput, savedPaid, {
       excludeExtraneousValues: true,
     });
+  }
+  async deniedTicket(
+    ctx: RequestContext,
+    rawInput: PaidUpdateInput,
+    id: number
+  ): Promise<PaidTicketOutput> {
+    const dbTicket = await this.paidTicketRepository.findOneBy({ id });
+    const user = await this.userService.getById(dbTicket.approverPersonId);
+
+    if (user.role !== 3) {
+      return;
+    }
+    return await this.updatePaidTicket(ctx, rawInput, id);
   }
 }
