@@ -209,4 +209,11 @@ export class UserController {
     await this.mailService.sendMail(body);
     return { message: 'Email sent' };
   }
+
+  @Get('get-country')
+  async getListCountry() {
+    try {
+      return await this.userService.getCountryArr();
+    } catch (error) {}
+  }
 }

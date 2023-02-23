@@ -27,16 +27,25 @@ import { ChangeUserWorkInfo } from '../dtos/change-work-info.dto';
 import { ChangeContactUserInfo } from '../dtos/change-contact-user.dto';
 import { UserOutput } from '../dtos/user-output.dto';
 import { ChangeUserInfo } from '../dtos/change-user-input.dto';
+import { HttpService } from '@nestjs/axios';
+import { AxiosResponse } from 'axios';
+import { map } from 'rxjs';
+import { CountryInput } from '../dtos/country.dto';
+import { CountryRepository } from '../repositories/country.repository';
+import { Country } from '../entities/country.entity';
 @Injectable()
 export class UserService {
   constructor(
+    private readonly httpService: HttpService,
     @InjectRepository(User) private readonly userRepository: UserRepository,
     @InjectRepository(UserPersonal)
     private readonly userPersonalRepository: UserPersonalRepository,
     @InjectRepository(UserWork)
     private readonly userWorkRepository: UserWorkRepository,
     @InjectRepository(ContactUser)
-    private readonly contactUserRepository: ContactUserRepository
+    private readonly contactUserRepository: ContactUserRepository,
+    @InjectRepository(Country)
+    private readonly countryRepository: CountryRepository
   ) {}
 
   async getByWorkEmail(email: string) {
@@ -100,7 +109,6 @@ export class UserService {
     if (user) {
       return user;
     }
-    console.log('o day 1');
     throw new HttpException(
       'User with this id does not exist',
       HttpStatus.NOT_FOUND
@@ -113,7 +121,6 @@ export class UserService {
   ): Promise<UserOutput> {
     const user = await this.userRepository.findOneBy({ id: id });
     this.userRepository.merge(user, input);
-
     const savedUser = await this.userRepository.save(user);
     return plainToInstance(UserOutput, savedUser, {
       excludeExtraneousValues: true,
@@ -124,13 +131,18 @@ export class UserService {
     input: ChangeUserPersonalInfo
   ): Promise<UserPersonalOutput> {
     let userId = input.id;
-    const user = await this.userPersonalRepository.findOneBy({ id: userId });
-    this.userPersonalRepository.merge(user, input);
+    const userPersonal = await this.userPersonalRepository.findOneBy({
+      id: userId,
+    });
+    const user = await this.userRepository.findOneBy({ userPersonal: userId });
+    this.userPersonalRepository.merge(userPersonal, input);
 
-    const savedUser = await this.userPersonalRepository.save(user);
-    let updateUser = new ChangeUserInfo();
-    updateUser.accountStatus = 2;
-    this.updateUser(ctx, updateUser, userId);
+    const savedUser = await this.userPersonalRepository.save(userPersonal);
+    if (user.accountStatus === 1) {
+      let updateUser = new ChangeUserInfo();
+      updateUser.accountStatus = 2;
+      this.updateUser(ctx, updateUser, user.id);
+    }
     return plainToInstance(UserPersonalOutput, savedUser, {
       excludeExtraneousValues: true,
     });
@@ -156,7 +168,6 @@ export class UserService {
     let userId = input.id;
     const user = await this.contactUserRepository.findOneBy({ id: userId });
     this.contactUserRepository.merge(user, input);
-
     const savedUser = await this.contactUserRepository.save(user);
     return plainToInstance(ContactUserOutput, savedUser, {
       excludeExtraneousValues: true,
@@ -240,5 +251,44 @@ export class UserService {
     } catch (error) {
       console.log(error);
     }
+  }
+
+  async getListCountry(): Promise<string[]> {
+    try {
+      const response = await this.httpService
+        .get('https://restcountries.com/v3.1/all')
+        .toPromise();
+      let countryNames = response.data
+        .map((country) => country.name.common)
+        .sort((a, b) => {
+          if (a > b) {
+            return 1;
+          }
+
+          if (a < b) {
+            return -1;
+          }
+
+          return 0;
+        });
+      let countryInput = new CountryInput();
+      countryNames.forEach((element) => {
+        countryInput.name = element;
+        this.createCountry(countryInput);
+      });
+      return countryNames;
+    } catch (error) {}
+  }
+
+  async createCountry(input: CountryInput) {
+    const newUser = this.countryRepository.create(input);
+    let saveUser = await this.countryRepository.save(newUser);
+    return saveUser;
+  }
+  async getCountryArr() {
+    try {
+      let arrCountry = await this.countryRepository.find();
+      return arrCountry;
+    } catch (error) {}
   }
 }

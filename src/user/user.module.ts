@@ -16,8 +16,22 @@ import { UserWorkRepository } from './repositories/user-work.repository';
 import { ContactUserRepository } from './repositories/contact-user.repository';
 import { UserService } from './services/user.service.spec';
 import { MailService } from './services/mail.service';
+import { HttpModule } from '@nestjs/axios';
+import { CountryRepository } from './repositories/country.repository';
+import { Country } from './entities/country.entity';
 @Module({
-  imports: [ConfigModule, TypeOrmModule.forFeature([User, UserPersonal, UserWork, ContactUser, UserPersonalRepository])],
+  imports: [
+    ConfigModule,
+    HttpModule,
+    TypeOrmModule.forFeature([
+      User,
+      UserPersonal,
+      UserWork,
+      ContactUser,
+      UserPersonalRepository,
+      Country,
+    ]),
+  ],
   controllers: [UserController, AuthController],
   exports: [
     JwtService,
@@ -27,7 +41,8 @@ import { MailService } from './services/mail.service';
     UserPersonalRepository,
     UserWorkRepository,
     MailService,
-    ContactUserRepository
+    ContactUserRepository,
+    CountryRepository,
   ],
   providers: [
     JwtService,
@@ -36,6 +51,7 @@ import { MailService } from './services/mail.service';
     UserPersonalRepository,
     UserWorkRepository,
     ContactUserRepository,
+    CountryRepository,
     AuthService,
     MailService,
     LocalStrategy,

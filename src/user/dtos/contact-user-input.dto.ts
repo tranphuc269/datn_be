@@ -32,4 +32,9 @@ export class ContactUserInput {
   @ApiProperty()
   @Expose()
   countryId: string;
+  
+  @IsNotEmpty()
+  @ApiProperty()
+  @Expose()
+  email: string;
 }
