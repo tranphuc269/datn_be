@@ -22,6 +22,7 @@ import { UserWork } from './user-work.entity';
 import { Role } from './role.entity';
 import { ContactUser } from './contact-user.entity';
 import { AccountStatus } from './account-status.entity';
+import { TimeKeepingList } from '../../time_keeping/entities/time_keeping-list.entity';
 
 @Entity('users')
 export class User {
@@ -127,8 +128,8 @@ export class User {
   @OneToMany(() => SupplementTicket, (p) => p.user)
   supplementTickets: SupplementTicket[];
 
-  @OneToMany(() => TimeKeeping, (p) => p.user)
-  timeKeepings: TimeKeeping[];
+  @OneToMany(() => TimeKeepingList, (p) => p.user)
+  timeKeepingsList: TimeKeepingList[];
 
   @OneToMany(() => OvertimeTicket, (p) => p.createPerson)
   overtimeTicketsCreate: OvertimeTicket[];

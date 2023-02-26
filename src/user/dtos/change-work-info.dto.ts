@@ -9,6 +9,11 @@ export class ChangeUserWorkInfo {
   @ApiPropertyOptional()
   @Expose()
   @IsOptional()
+  employeeId?: string;
+
+  @ApiPropertyOptional()
+  @Expose()
+  @IsOptional()
   workEmail?: string;
 
   @ApiPropertyOptional()

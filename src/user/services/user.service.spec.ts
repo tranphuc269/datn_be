@@ -55,7 +55,6 @@ export class UserService {
     if (user) {
       return user;
     } else {
-      console.log('o day');
       throw new HttpException(
         'User with this id does not exist',
         HttpStatus.NOT_FOUND
@@ -68,6 +67,7 @@ export class UserService {
       const existUser = await this.userRepository.findBy({
         email: userData.email,
       });
+      console.log(existUser);
       if (existUser.length > 0) {
         throw new NotFoundException(`Email exist`);
       }
@@ -289,6 +289,19 @@ export class UserService {
     try {
       let arrCountry = await this.countryRepository.find();
       return arrCountry;
+    } catch (error) {}
+  }
+  async getDefaultData(ctx: RequestContext, userId: number) {
+    try {
+      const user = await this.getById(userId);
+      const userPersonal = await this.getPersonalInfo(ctx, userId);
+      const userWork = await this.getWorkInfo(ctx, userId);
+
+      const returnData = {
+        name: userPersonal.firstName + ' ' + userPersonal.lastName,
+        employeeId: userWork.employeeId,
+      };
+      return returnData;
     } catch (error) {}
   }
 }

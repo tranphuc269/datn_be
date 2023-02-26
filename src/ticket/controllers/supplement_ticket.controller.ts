@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
@@ -129,7 +130,11 @@ export class SupplementTicketController {
       input,
       id
     );
-    return { data };
+    if (data) {
+      return { data };
+    } else {
+      throw new BadRequestException();
+    }
   }
 
   @UseGuards(JwtAuthenticationGuard)
@@ -143,6 +148,25 @@ export class SupplementTicketController {
       ctx,
       { ticketStatusId: 3 },
       id
+    );
+    if (data) {
+      return { data };
+    } else {
+      throw new BadRequestException();
+    }
+  }
+
+  @UseGuards(JwtAuthenticationGuard)
+  @Get('month-missing/:id/:month')
+  async getRecordByMonthAndUserId(
+    @ReqContext() ctx: RequestContext,
+    @Param('id') userId: number,
+    @Param('month') month: string
+  ): Promise<BaseApiResponse<SupplementTicketOutput[]>> {
+    const data = await this.supplementTicketService.getMissingTicketByMonth(
+      ctx,
+      userId,
+      month
     );
     return { data };
   }

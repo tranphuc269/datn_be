@@ -216,4 +216,15 @@ export class UserController {
       return await this.userService.getCountryArr();
     } catch (error) {}
   }
+
+  @UseGuards(JwtAuthenticationGuard)
+  @Get('get-default/:id')
+  async getDefaultData(
+    @ReqContext() ctx: RequestContext,
+    @Param('id') id: number
+  ) {
+    try {
+      return await this.userService.getDefaultData(ctx, id);
+    } catch (error) {}
+  }
 }

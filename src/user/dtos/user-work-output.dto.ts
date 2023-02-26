@@ -12,6 +12,10 @@ export class UserWorkOutput {
 
   @ApiProperty()
   @Expose()
+  employeeId: string;
+
+  @ApiProperty()
+  @Expose()
   taxNumber: string;
 
   @ApiProperty()

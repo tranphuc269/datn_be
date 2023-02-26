@@ -9,9 +9,11 @@ import { TimeKeepingUpdateInput } from '../dtos/update-timekeeping-input.dto';
 import { TimeKeeping } from '../entities/time_keeping.entity';
 import { TimeKeepingRepository } from '../repositories/time_keeping.repository';
 import * as moment from 'moment';
+import { TimeKeepingListService } from './time_keeping-list.service';
 @Injectable()
 export class TimeKeepingService {
   constructor(
+    private readonly timeKeepingListService: TimeKeepingListService,
     @InjectRepository(TimeKeeping)
     private readonly timeKeepingRepository: TimeKeepingRepository
   ) {}
@@ -23,8 +25,8 @@ export class TimeKeepingService {
     let dateNow = new Date();
     const existRecord = await this.timeKeepingRepository
       .createQueryBuilder('time_keepings')
-      .where('time_keepings.user_id =:userId', {
-        userId: input.userId,
+      .where('time_keepings.timekeeping_list_id =:userId', {
+        timekeepingListId: input.timekeepingListId,
       })
       .andWhere('CAST(time_keepings.create_date as DATE) =:dateNow', {
         dateNow: dateNow.toISOString().split('T')[0],
@@ -33,7 +35,7 @@ export class TimeKeepingService {
     if (existRecord.length > 0) {
       let updateData = new TimeKeepingUpdateInput();
       updateData.id = existRecord[0].id;
-      updateData.userId = input.userId;
+      updateData.timekeepingListId = input.timekeepingListId;
       updateData.createDate = input.createDate;
       updateData.morningJoin = input.morningJoin;
       updateData.morningLeave = input.morningLeave;
@@ -52,13 +54,13 @@ export class TimeKeepingService {
   async createRecordTimeKeepingById(
     ctx: RequestContext,
     input: TimeKeepingInput,
-    userId: number
+    timekeepingListId: number
   ): Promise<TimeKeepingOutput> {
     let dateNow = new Date();
     const existRecord = await this.timeKeepingRepository
       .createQueryBuilder('time_keepings')
-      .where('time_keepings.user_id =:userId', {
-        userId: userId,
+      .where('time_keepings.timekeeping_list_id =:timekeepingListId', {
+        timekeepingListId: timekeepingListId,
       })
       .andWhere('CAST(time_keepings.create_date as DATE) =:dateNow', {
         dateNow: dateNow.toISOString().split('T')[0],
@@ -82,9 +84,9 @@ export class TimeKeepingService {
       exposeDefaultValues: true,
     });
   }
-  async getRecordByMonthAndUserId(
+  async getRecordByMonthAndListId(
     ctx: RequestContext,
-    userId: number,
+    timekeepingListId: number,
     month: string
   ): Promise<TimeKeepingOutput[]> {
     let date = new Date(month + '-01');
@@ -92,8 +94,8 @@ export class TimeKeepingService {
     let endDate = moment(date).endOf('month').format('YYYY-MM-DD');
     const listRecord = await this.timeKeepingRepository
       .createQueryBuilder('time_keepings')
-      .where('time_keepings.user_id =:userId', {
-        userId: userId,
+      .where('time_keepings.timekeeping_list_id =:timekeepingListId', {
+        timekeepingListId: timekeepingListId,
       })
       .andWhere(
         'CAST(time_keepings.create_date as DATE) between :startDate and :endDate',
@@ -112,10 +114,16 @@ export class TimeKeepingService {
     let date = new Date();
     let startDate = moment(date).startOf('month').format('YYYY-MM-DD');
     let endDate = moment(date).endOf('month').format('YYYY-MM-DD');
+    const timekeepingList =
+      await this.timeKeepingListService.getTimeKeepingListByMonthAndUserId(
+        ctx,
+        userId,
+        date.toISOString().substr(0, 7)
+      );
     const listRecord = await this.timeKeepingRepository
       .createQueryBuilder('time_keepings')
-      .where('time_keepings.user_id =:userId', {
-        userId: userId,
+      .where('time_keepings.timekeeping_list_id =:userId', {
+        timekeepingListId: timekeepingList.id,
       })
       .andWhere(
         'CAST(time_keepings.create_date as DATE) between :startDate and :endDate',
@@ -128,7 +136,7 @@ export class TimeKeepingService {
       .getMany();
     return listRecord;
   }
-  async createRecordInMonth(ctx: RequestContext, userId: number) {
+  async createRecordInMonth(ctx: RequestContext, timekeepingListId: number) {
     let nowDate = new Date();
     let nowYear = nowDate.getFullYear();
     let nowMonth = ('0' + (nowDate.getMonth() + 1)).slice(-2);
@@ -138,22 +146,26 @@ export class TimeKeepingService {
     let listRecord = [];
     listDate.forEach(async (element) => {
       let newObj = new TimeKeepingInput();
-      newObj.userId = userId;
+      newObj.timekeepingListId = timekeepingListId;
       newObj.createDate = new Date(nowYear, nowDate.getMonth(), element + 1);
-      const data = await this.createRecordTimeKeepingById(ctx, newObj, userId);
+      const data = await this.createRecordTimeKeepingById(
+        ctx,
+        newObj,
+        timekeepingListId
+      );
       listRecord.push(data);
     });
     return listRecord;
   }
   async getRecordByDateAndUserId(
     ctx: RequestContext,
-    userId: number,
+    timekeepingListId: number,
     date: string
   ): Promise<TimeKeepingOutput> {
     const listRecord = await this.timeKeepingRepository
       .createQueryBuilder('time_keepings')
-      .where('time_keepings.user_id =:userId', {
-        userId: userId,
+      .where('time_keepings.timekeeping_list_id =:userId', {
+        timekeepingListId: timekeepingListId,
       })
       .andWhere('CAST(time_keepings.create_date as DATE) = :date', {
         date: date,
@@ -161,14 +173,18 @@ export class TimeKeepingService {
       .getOne();
     return listRecord;
   }
-  async getTotalWorkingThisMonth(ctx: RequestContext, userId: number) {
+  async getTotalWorkingThisMonth(
+    ctx: RequestContext,
+    timekeepingListId: number
+  ) {
     let date = new Date();
     let startDate = moment(date).startOf('month').format('YYYY-MM-DD');
     let endDate = moment(date).endOf('month').format('YYYY-MM-DD');
     const listRecord = await this.timeKeepingRepository
-      .createQueryBuilder('time_keepings').select('SUM(time_keepings.work_amount_id) as sum')
-      .where('time_keepings.user_id =:userId', {
-        userId: userId,
+      .createQueryBuilder('time_keepings')
+      .select('SUM(time_keepings.work_amount_id) as sum')
+      .where('time_keepings.timekeeping_list_id =:userId', {
+        timekeepingListId: timekeepingListId,
       })
       .andWhere(
         'CAST(time_keepings.create_date as DATE) between :startDate and :endDate',

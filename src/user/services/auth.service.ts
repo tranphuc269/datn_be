@@ -18,11 +18,15 @@ import { LoginInput } from '../dtos/login-input.dto';
 import { ChangeUserInfo } from '../dtos/change-user-input.dto';
 import * as jwt from 'jsonwebtoken';
 import { ApiBearerAuth } from '@nestjs/swagger';
+import { ChangeUserWorkInfo } from '../dtos/change-work-info.dto';
+import { TimeKeepingListService } from 'src/time_keeping/services/time_keeping-list.service';
+import { TimeKeepingListInput } from 'src/time_keeping/dtos/timekeeping-list-input.dto';
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
+    private readonly timekeepingListService: TimeKeepingListService,
     private readonly configService: ConfigService
   ) {}
   public async register(registrationData: UserInput, ctx: RequestContext) {
@@ -46,6 +50,22 @@ export class AuthService {
         ctx
       );
       createdUser.password = undefined;
+      const userWorkData = await this.userService.getWorkInfo(
+        ctx,
+        createdUser.id
+      );
+      let userWorkUpdate = new ChangeUserWorkInfo();
+      userWorkUpdate.id = createdUser.userWork;
+      userWorkUpdate.employeeId = `NV000${userWorkData.id}`;
+      let newTimeKeepingList = new TimeKeepingListInput();
+      newTimeKeepingList.userId = createdUser.id;
+      newTimeKeepingList.month = new Date();
+      await this.userService.updateWorkUser(ctx, userWorkUpdate);
+      await this.timekeepingListService.createTimekeepingList(
+        ctx,
+        newTimeKeepingList,
+        createdUser.id
+      );
       return createdUser;
     } catch (error) {
       console.log(error);
@@ -92,7 +112,7 @@ export class AuthService {
         };
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
       throw new HttpException('Wrong credentials', HttpStatus.BAD_REQUEST);
     }
   }

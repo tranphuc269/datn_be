@@ -18,11 +18,15 @@ import { UpdateSupplementInput } from '../dtos/update-supplement-input.dto';
 import { TimeKeepingUpdateInput } from 'src/time_keeping/dtos/update-timekeeping-input.dto';
 import { StatusUpdateInput } from '../dtos/status-ticket-input.dto';
 import { UserService } from 'src/user/services/user.service.spec';
+import { MailInput } from 'src/user/dtos/mail.dto';
+import { MailService } from 'src/user/services/mail.service';
+import * as moment from 'moment';
 @Injectable()
 export class SupplementTicketService {
   constructor(
     private readonly timeKeepingService: TimeKeepingService,
     private readonly userService: UserService,
+    private readonly mailService: MailService,
     @InjectRepository(SupplementTicket)
     private readonly supplementTicketRepository: SupplementTicketRepository
   ) {}
@@ -39,7 +43,7 @@ export class SupplementTicketService {
       );
 
       if (user.role !== 3) {
-        return;
+        return null;
       }
       const saveTicket = await this.supplementTicketRepository.save(
         newSupplementTicket
@@ -81,7 +85,6 @@ export class SupplementTicketService {
     const brand = this.supplementTicketRepository.merge(dbTicket, input);
     if (input.ticketStatusId === 1) {
       let newRecordTimeKeeping = new TimeKeepingInput();
-      newRecordTimeKeeping.userId = rawInput.createPersonId;
       newRecordTimeKeeping.workAmountId = 3;
       newRecordTimeKeeping.workTypeId = 3;
       newRecordTimeKeeping.createDate = new Date();
@@ -143,9 +146,10 @@ export class SupplementTicketService {
   ): Promise<SupplementTicketOutput> {
     const dbTicket = await this.supplementTicketRepository.findOneBy({ id });
     const user = await this.userService.getById(dbTicket.approverPersonId);
+    const createUser = await this.userService.getById(dbTicket.createPersonId);
 
     if (user.role !== 3) {
-      return;
+      return null;
     }
     const input = plainToInstance(CreateSupplementTicketInput, rawInput, {
       excludeExtraneousValues: true,
@@ -192,6 +196,11 @@ export class SupplementTicketService {
     payloadTicket.id = timekeepingRecord.id;
     const updateRecordTimeKeeping =
       await this.timeKeepingService.updateRecordTimeKeeping(ctx, payloadTicket);
+    let mailInformation = new MailInput();
+    mailInformation.email = createUser.email;
+    mailInformation.subject = 'Missing Ticket';
+    mailInformation.message = `Your Missing ticket is Approved. This is your ticket: ${process.env.URL_FE}missing_work/${dbTicket.id}`;
+    await this.mailService.sendMail(mailInformation);
     return plainToInstance(SupplementTicketOutput, savedPaid, {
       excludeExtraneousValues: true,
     });
@@ -221,9 +230,9 @@ export class SupplementTicketService {
     const dbTicket = await this.supplementTicketRepository.findOneBy({ id });
 
     const user = await this.userService.getById(dbTicket.approverPersonId);
-
+    const createUser = await this.userService.getById(dbTicket.createPersonId);
     if (user.role !== 3) {
-      return;
+      return null;
     }
 
     const input = plainToInstance(CreateSupplementTicketInput, status, {
@@ -231,9 +240,36 @@ export class SupplementTicketService {
     });
     const paid = this.supplementTicketRepository.merge(dbTicket, input);
     const savedPaid = await this.supplementTicketRepository.save(paid);
-
+    let mailInformation = new MailInput();
+    mailInformation.email = createUser.email;
+    mailInformation.subject = 'Missing Ticket';
+    mailInformation.message = `Your Missing ticket is Denied. This is your ticket: ${process.env.URL_FE}missing_work/${dbTicket.id}`;
     return plainToInstance(SupplementTicketOutput, savedPaid, {
       excludeExtraneousValues: true,
     });
+  }
+
+  async getMissingTicketByMonth(
+    ctx: RequestContext,
+    userId: number,
+    month: string
+  ) {
+    let date = new Date(month + '-01');
+    let startDate = moment(date).startOf('month').format('YYYY-MM-DD');
+    let endDate = moment(date).endOf('month').format('YYYY-MM-DD');
+    const listRecord = await this.supplementTicketRepository
+      .createQueryBuilder('supplement_tickets')
+      .where('supplement_tickets.create_person_id =:userId', {
+        userId: userId,
+      })
+      .andWhere(
+        'CAST(supplement_tickets.created_at as DATE) between :startDate and :endDate',
+        {
+          startDate: startDate,
+          endDate: endDate,
+        }
+      )
+      .getMany();
+    return listRecord;
   }
 }

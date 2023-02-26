@@ -17,6 +17,14 @@ export class UserWork {
     nullable: true,
   })
   workEmail: string;
+  @Column({
+    name: 'employee_id',
+    type: 'nvarchar',
+    length: 255,
+    charset: 'utf8',
+    nullable: true,
+  })
+  employeeId: string;
 
   @Column({
     name: 'tax_number',
@@ -79,7 +87,6 @@ export class UserWork {
     nullable: true,
   })
   bhytDate: Date;
-
 
   @Column({
     name: 'leave_reason',

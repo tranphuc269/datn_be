@@ -8,7 +8,7 @@ export class TimeKeepingOutput {
 
   @ApiProperty()
   @Expose()
-  userId?: number;
+  timekeepingListId?: number;
 
   @ApiProperty()
   @Expose()

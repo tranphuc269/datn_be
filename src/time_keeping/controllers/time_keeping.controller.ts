@@ -49,16 +49,28 @@ export class TimeKeepingController {
   @Get('month-timekeeping/:id/:month')
   async getRecordByMonthAndUserId(
     @ReqContext() ctx: RequestContext,
-    @Param('id') userId: number,
+    @Param('id') timekeepingListId: number,
     @Param('month') month: string
   ): Promise<BaseApiResponse<TimeKeepingOutput[]>> {
-    const data = await this.timeKeepingService.getRecordByMonthAndUserId(
+    const data = await this.timeKeepingService.getRecordByMonthAndListId(
       ctx,
-      userId,
+      timekeepingListId,
       month
     );
     return { data };
   }
+  // async getRecordByMonthAndUserId(
+  //   @ReqContext() ctx: RequestContext,
+  //   @Param('id') userId: number,
+  //   @Param('month') month: string
+  // ): Promise<BaseApiResponse<TimeKeepingOutput[]>> {
+  //   const data = await this.timeKeepingService.getRecordByMonthAndUserId(
+  //     ctx,
+  //     userId,
+  //     month
+  //   );
+  //   return { data };
+  // }
 
   @UseGuards(JwtAuthenticationGuard)
   @Get('month-timekeeping/:id')

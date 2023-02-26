@@ -19,8 +19,16 @@ import { MailService } from './services/mail.service';
 import { HttpModule } from '@nestjs/axios';
 import { CountryRepository } from './repositories/country.repository';
 import { Country } from './entities/country.entity';
+import { TimeKeepingModule } from '../time_keeping/time_keeping.module';
+import { TimeKeepingListService } from '../time_keeping/services/time_keeping-list.service';
+import { TimeKeepingService } from '../time_keeping/services/time_keeping.service';
+import { TimeKeepingRepository } from '../time_keeping/repositories/time_keeping.repository';
+import { TimeKeepingListRepository } from '../time_keeping/repositories/time_keeping-list.repository';
+import { TimeKeeping } from '../time_keeping/entities/time_keeping.entity';
+import { TimeKeepingList } from '../time_keeping/entities/time_keeping-list.entity';
 @Module({
   imports: [
+    TimeKeepingModule,
     ConfigModule,
     HttpModule,
     TypeOrmModule.forFeature([
@@ -30,10 +38,18 @@ import { Country } from './entities/country.entity';
       ContactUser,
       UserPersonalRepository,
       Country,
+      TimeKeeping,
+      TimeKeepingList,
+      TimeKeepingRepository,
+      TimeKeepingListRepository,
     ]),
   ],
   controllers: [UserController, AuthController],
   exports: [
+    TimeKeepingService,
+    TimeKeepingRepository,
+    TimeKeepingListRepository,
+    TimeKeepingListService,
     JwtService,
     UserService,
     UserRepository,
@@ -45,6 +61,10 @@ import { Country } from './entities/country.entity';
     CountryRepository,
   ],
   providers: [
+    TimeKeepingService,
+    TimeKeepingRepository,
+    TimeKeepingListRepository,
+    TimeKeepingListService,
     JwtService,
     UserService,
     UserRepository,

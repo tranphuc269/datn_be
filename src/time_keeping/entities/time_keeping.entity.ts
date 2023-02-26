@@ -12,6 +12,7 @@ import {
 } from 'typeorm';
 import { WorkAmount } from './work_amount.entity';
 import { WorkType } from './work_type.entity';
+import { TimeKeepingList } from './time_keeping-list.entity';
 
 @Entity('time_keepings')
 export class TimeKeeping {
@@ -22,14 +23,15 @@ export class TimeKeeping {
   id: number;
 
   @Column({
-    name: 'user_id',
+    name: 'timekeeping_list_id',
     type: 'int',
   })
-  userId: number;
+  timekeepingListId: number;
 
   @Column({
     name: 'create_date',
     type: 'datetime',
+    nullable: true,
   })
   createDate: Date;
 
@@ -98,11 +100,11 @@ export class TimeKeeping {
   })
   deletedAt?: Date;
 
-  @ManyToOne(() => User, (b) => b.timeKeepings)
+  @ManyToOne(() => TimeKeepingList, (b) => b.timeKeeping)
   @JoinColumn({
-    name: 'user_id',
+    name: 'timekeeping_list_id',
   })
-  user: User;
+  timeKeepingList: TimeKeepingList;
 
   @ManyToOne(() => WorkType, (b) => b.timeKeepings)
   @JoinColumn({ name: 'work_type_id' })

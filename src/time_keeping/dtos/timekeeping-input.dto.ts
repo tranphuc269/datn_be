@@ -7,7 +7,7 @@ export class TimeKeepingInput {
   @ApiProperty()
   @Expose()
   @IsNotEmpty()
-  userId: number;
+  timekeepingListId: number;
 
   @IsNotEmpty()
   @ApiProperty()

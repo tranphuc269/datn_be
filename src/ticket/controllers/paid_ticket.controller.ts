@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
@@ -16,6 +17,7 @@ import { ReqContext } from '../../shared/request-context/req-context.decorator';
 import { RequestContext } from '../../shared/request-context/request-context';
 import { CreatePaidTicketInput } from '../dtos/create-paid-input.dto';
 import { PaidTicketOutput } from '../dtos/create-paid-output.dto';
+import { GetPaidTicketOutput } from '../dtos/get-paid-output.dto';
 import { PaidUpdateInput } from '../dtos/update-paid-input.dto';
 import { PaidTicketService } from '../services/paid_ticket.service';
 @Controller('paid_tickets')
@@ -60,7 +62,11 @@ export class PaidTicketController {
     @Param('id') id: number
   ): Promise<BaseApiResponse<PaidTicketOutput>> {
     const data = await this.paidTicketService.approveTickets(ctx, id);
-    return { data };
+    if (data) {
+      return { data };
+    } else {
+      throw new BadRequestException();
+    }
   }
 
   @UseGuards(JwtAuthenticationGuard)
@@ -75,7 +81,11 @@ export class PaidTicketController {
       { ticketStatusId: 3 },
       id
     );
-    return { data };
+    if (data) {
+      return { data };
+    } else {
+      throw new BadRequestException();
+    }
   }
 
   @UseGuards(JwtAuthenticationGuard)
@@ -115,7 +125,7 @@ export class PaidTicketController {
   async getPaidTicketById(
     @ReqContext() ctx: RequestContext,
     @Param('id') paidId: number
-  ): Promise<BaseApiResponse<PaidTicketOutput>> {
+  ): Promise<BaseApiResponse<GetPaidTicketOutput>> {
     const data = await this.paidTicketService.getPaidTicketById(ctx, paidId);
     return { data };
   }
@@ -129,6 +139,21 @@ export class PaidTicketController {
     const data = await this.paidTicketService.getPaidTicketRelatedMe(
       ctx,
       userId
+    );
+    return { data };
+  }
+
+  @UseGuards(JwtAuthenticationGuard)
+  @Get('month-paid/:id/:month')
+  async getRecordByMonthAndUserId(
+    @ReqContext() ctx: RequestContext,
+    @Param('id') userId: number,
+    @Param('month') month: string
+  ): Promise<BaseApiResponse<PaidTicketOutput[]>> {
+    const data = await this.paidTicketService.getPaidTicketByMonth(
+      ctx,
+      userId,
+      month
     );
     return { data };
   }
