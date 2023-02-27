@@ -28,8 +28,6 @@ import { ChangeContactUserInfo } from '../dtos/change-contact-user.dto';
 import { UserOutput } from '../dtos/user-output.dto';
 import { ChangeUserInfo } from '../dtos/change-user-input.dto';
 import { HttpService } from '@nestjs/axios';
-import { AxiosResponse } from 'axios';
-import { map } from 'rxjs';
 import { CountryInput } from '../dtos/country.dto';
 import { CountryRepository } from '../repositories/country.repository';
 import { Country } from '../entities/country.entity';
@@ -302,6 +300,25 @@ export class UserService {
         employeeId: userWork.employeeId,
       };
       return returnData;
+    } catch (error) {}
+  }
+
+  async checkIsValidResetKey(ctx: RequestContext, resetKey: string) {
+    try {
+      const nowDate = new Date();
+      const existRecord = await this.userRepository
+        .createQueryBuilder('users')
+        .where('users.reset_key =:resetKey', {
+          resetKey: resetKey,
+        })
+        .andWhere('users.expired_key >=:dateNow', {
+          dateNow: nowDate,
+        })
+        .getMany();
+      if (existRecord.length > 0) {
+        return { email: existRecord[0].email };
+      }
+      return null;
     } catch (error) {}
   }
 }

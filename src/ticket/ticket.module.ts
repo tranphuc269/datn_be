@@ -20,11 +20,13 @@ import { PaidType } from './entities/paid_type.entity';
 import { UserService } from '../user/services/user.service.spec';
 import { User } from '../user/entities/user.entity';
 import { UserModule } from '../user/user.module';
+import { TimeKeepingListModule } from 'src/time_keeping/time_keeping-list.module';
 
 @Module({
   imports: [
     ConfigModule,
     TimeKeepingModule,
+    TimeKeepingListModule,
     UserModule,
     TypeOrmModule.forFeature([
       PaidTicket,
@@ -37,8 +39,6 @@ import { UserModule } from '../user/user.module';
   ],
   controllers: [PaidTicketController, SupplementTicketController],
   providers: [
-    TimeKeepingService,
-    TimeKeepingRepository,
     PaidTicketService,
     PaidTicketRepository,
     SupplementTicketRepository,

@@ -26,9 +26,11 @@ import { TimeKeepingRepository } from '../time_keeping/repositories/time_keeping
 import { TimeKeepingListRepository } from '../time_keeping/repositories/time_keeping-list.repository';
 import { TimeKeeping } from '../time_keeping/entities/time_keeping.entity';
 import { TimeKeepingList } from '../time_keeping/entities/time_keeping-list.entity';
+import { TimeKeepingListModule } from 'src/time_keeping/time_keeping-list.module';
 @Module({
   imports: [
     TimeKeepingModule,
+    TimeKeepingListModule,
     ConfigModule,
     HttpModule,
     TypeOrmModule.forFeature([
@@ -38,18 +40,10 @@ import { TimeKeepingList } from '../time_keeping/entities/time_keeping-list.enti
       ContactUser,
       UserPersonalRepository,
       Country,
-      TimeKeeping,
-      TimeKeepingList,
-      TimeKeepingRepository,
-      TimeKeepingListRepository,
     ]),
   ],
   controllers: [UserController, AuthController],
   exports: [
-    TimeKeepingService,
-    TimeKeepingRepository,
-    TimeKeepingListRepository,
-    TimeKeepingListService,
     JwtService,
     UserService,
     UserRepository,
@@ -61,10 +55,6 @@ import { TimeKeepingList } from '../time_keeping/entities/time_keeping-list.enti
     CountryRepository,
   ],
   providers: [
-    TimeKeepingService,
-    TimeKeepingRepository,
-    TimeKeepingListRepository,
-    TimeKeepingListService,
     JwtService,
     UserService,
     UserRepository,

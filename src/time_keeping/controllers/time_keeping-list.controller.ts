@@ -37,7 +37,7 @@ export class TimeKeepingListController {
     return { data };
   }
 
-  // @UseGuards(JwtAuthenticationGuard)
+  @UseGuards(JwtAuthenticationGuard)
   @Get('timekeeping-list/:id/:month')
   async getTimeKeepingListByMonthAndUserId(
     @ReqContext() ctx: RequestContext,

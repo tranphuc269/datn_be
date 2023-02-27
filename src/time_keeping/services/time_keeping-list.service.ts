@@ -1,4 +1,10 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  forwardRef,
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { plainToInstance } from 'class-transformer';
 import { RequestContext } from 'src/shared/request-context/request-context';
@@ -19,7 +25,8 @@ export class TimeKeepingListService {
   constructor(
     @InjectRepository(TimeKeepingList)
     private readonly timeKeepingListRepository: TimeKeepingListRepository,
-    private readonly timeKeepingService: TimeKeepingService
+    @Inject(forwardRef(() => TimeKeepingService))
+    private timeKeepingService: TimeKeepingService
   ) {}
 
   async createTimekeepingList(
@@ -37,7 +44,6 @@ export class TimeKeepingListService {
         dateNow: dateNow.toISOString().split('T')[0],
       })
       .getMany();
-    console.log(existRecord);
     if (existRecord.length > 0) {
       return;
     }

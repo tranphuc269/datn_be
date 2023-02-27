@@ -26,4 +26,19 @@ export class ChangeUserInfo {
   @ApiPropertyOptional()
   @Expose()
   accessToken: string;
+
+  @IsOptional()
+  @ApiPropertyOptional()
+  @Expose()
+  resetKey: string;
+
+  @IsOptional()
+  @ApiPropertyOptional()
+  @Expose()
+  expiredKey: Date;
+
+  @IsOptional()
+  @ApiPropertyOptional()
+  @Expose()
+  password: string;
 }

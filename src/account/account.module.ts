@@ -11,11 +11,13 @@ import { AccountRepository } from './repositories/account.repository';
 import { Account } from './entities/account.entity';
 import { UserModule } from 'src/user/user.module';
 import { User } from 'src/user/entities/user.entity';
+import { TimeKeepingListModule } from 'src/time_keeping/time_keeping-list.module';
 
 @Module({
   imports: [
     ConfigModule,
     TimeKeepingModule,
+    TimeKeepingListModule,
     UserModule,
     TypeOrmModule.forFeature([Account, TimeKeeping, User]),
   ],

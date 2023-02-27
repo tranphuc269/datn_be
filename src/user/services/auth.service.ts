@@ -21,12 +21,17 @@ import { ApiBearerAuth } from '@nestjs/swagger';
 import { ChangeUserWorkInfo } from '../dtos/change-work-info.dto';
 import { TimeKeepingListService } from 'src/time_keeping/services/time_keeping-list.service';
 import { TimeKeepingListInput } from 'src/time_keeping/dtos/timekeeping-list-input.dto';
+import * as moment from 'moment';
+import { v4 as uuidv4 } from 'uuid';
+import { MailService } from './mail.service';
+import { MailInput } from '../dtos/mail.dto';
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
     private readonly timekeepingListService: TimeKeepingListService,
+    private readonly mailService: MailService,
     private readonly configService: ConfigService
   ) {}
   public async register(registrationData: UserInput, ctx: RequestContext) {
@@ -161,5 +166,63 @@ export class AuthService {
     } catch (error) {
       throw new UnauthorizedException('Invalid token');
     }
+  }
+
+  async forgotPassword(ctx: RequestContext, email: string) {
+    try {
+      const user = await this.userService.getByWorkEmail(email);
+      if (!user) {
+        return null;
+      }
+
+      const token = uuidv4();
+      let newUpdateUser = new ChangeUserInfo();
+      const expiration = new Date();
+      expiration.setMinutes(expiration.getMinutes() + 30);
+      newUpdateUser.expiredKey = expiration;
+      newUpdateUser.resetKey = token;
+      const updatedData = await this.userService.updateUser(
+        ctx,
+        newUpdateUser,
+        user.id
+      );
+      let mailInput = new MailInput();
+      mailInput.email = updatedData.email;
+      mailInput.subject = 'Forgot password link';
+      mailInput.message = `${process.env.URL_FE}forgot-password/${token}/`;
+      await this.mailService.sendMail(mailInput);
+      return updatedData;
+    } catch (error) {}
+  }
+
+  async checkIsValidResetKey(ctx: RequestContext, resetKey: string) {
+    try {
+      const user = await this.userService.checkIsValidResetKey(ctx, resetKey);
+      if (user) {
+        return user;
+      }
+      return null;
+    } catch (error) {}
+  }
+  async changeForgotPassword(
+    ctx: RequestContext,
+    password: string,
+    restKey: string
+  ) {
+    try {
+      const userEmail = await this.checkIsValidResetKey(ctx, restKey);
+      if (!userEmail) {
+        return null;
+      }
+      const user = await this.userService.getByWorkEmail(userEmail.email);
+      const hashPassword = await bcrypt.hash(password, 10);
+      let updatePasswordData = new ChangeUserInfo();
+      updatePasswordData.password = hashPassword;
+      return await this.userService.updateUser(
+        ctx,
+        updatePasswordData,
+        user.id
+      );
+    } catch (error) {}
   }
 }

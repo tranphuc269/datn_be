@@ -104,6 +104,22 @@ export class User {
   })
   accessToken: string;
 
+  @Column({
+    name: 'reset_key',
+    type: 'nvarchar',
+    length: 255,
+    charset: 'utf8',
+    nullable: true,
+  })
+  resetKey: string;
+
+  @Column({
+    name: 'expired_key',
+    type: 'datetime',
+    nullable: true,
+  })
+  expiredKey: Date;
+
   @CreateDateColumn({
     name: 'created_at',
     nullable: true,

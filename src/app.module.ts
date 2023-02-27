@@ -8,11 +8,13 @@ import { UserModule } from './user/user.module';
 import { TimeKeepingModule } from './time_keeping/time_keeping.module';
 import { TicketModule } from './ticket/ticket.module';
 import { AccountModule } from './account/account.module';
+import { TimeKeepingListModule } from './time_keeping/time_keeping-list.module';
 @Module({
   imports: [
     ConfigurationModule,
     UserModule,
     TimeKeepingModule,
+    TimeKeepingListModule,
     TicketModule,
     AccountModule,
     TypeOrmModule.forRootAsync({

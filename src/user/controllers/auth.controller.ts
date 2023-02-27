@@ -9,6 +9,8 @@ import {
   Get,
   HttpException,
   HttpStatus,
+  Param,
+  Put,
 } from '@nestjs/common';
 import RequestWithUser from '../interface/requestWithUser.interface';
 import { AuthService } from '../services/auth.service';
@@ -20,6 +22,7 @@ import { ReqContext } from 'src/shared/request-context/req-context.decorator';
 import { RequestContext } from 'src/shared/request-context/request-context';
 import { MeInput } from '../dtos/me.dto';
 import { ApiBearerAuth } from '@nestjs/swagger';
+import { UpdatePasswordDto } from '../dtos/update-forgot-password.dto';
 
 @Controller('authentication')
 @ApiBearerAuth()
@@ -67,5 +70,48 @@ export class AuthController {
   async verifyToken(@Body() accessToken: MeInput) {
     const decoded = await this.authService.verifyToken(accessToken.accessToken);
     return decoded;
+  }
+  @HttpCode(HttpStatus.OK)
+  @Post('forgot-password/:email')
+  async forgotPassword(
+    @ReqContext() ctx: RequestContext,
+    @Param('email') email: string
+  ) {
+    const result = await this.authService.forgotPassword(ctx, email);
+    if (result) {
+      return { message: 'Success!', code: 200 };
+    } else {
+      throw new HttpException('Error', HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  @Post('is-valid-forgot-password/:resetKey')
+  async checkIsValidResetKey(
+    @ReqContext() ctx: RequestContext,
+    @Param('resetKey') resetKey: string
+  ) {
+    const result = await this.authService.checkIsValidResetKey(ctx, resetKey);
+    if (result) {
+      return result;
+    } else {
+      throw new HttpException('Code Expired', HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  @Put('change-forgot-password')
+  async changeForgotPassword(
+    @ReqContext() ctx: RequestContext,
+    @Body() updateData: UpdatePasswordDto
+  ) {
+    const result = await this.authService.changeForgotPassword(
+      ctx,
+      updateData.newPassword,
+      updateData.resetKey
+    );
+    if (result) {
+      return result;
+    } else {
+      throw new HttpException('Update Failed !', HttpStatus.BAD_REQUEST);
+    }
   }
 }

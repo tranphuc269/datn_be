@@ -9,16 +9,16 @@ import { TimeKeepingListRepository } from './repositories/time_keeping-list.repo
 import { TimeKeepingRepository } from './repositories/time_keeping.repository';
 import { TimeKeepingListService } from './services/time_keeping-list.service';
 import { TimeKeepingService } from './services/time_keeping.service';
-import { TimeKeepingListModule } from './time_keeping-list.module';
+import { TimeKeepingModule } from './time_keeping.module';
 
 @Module({
   imports: [
     ConfigModule,
-    forwardRef(() => TimeKeepingListModule),
-    TypeOrmModule.forFeature([TimeKeeping, TimeKeepingRepository]),
+    forwardRef(() => TimeKeepingModule),
+    TypeOrmModule.forFeature([TimeKeepingList, TimeKeepingListRepository]),
   ],
-  controllers: [TimeKeepingController],
-  providers: [TimeKeepingService, TimeKeepingRepository],
-  exports: [TimeKeepingService],
+  controllers: [TimeKeepingListController],
+  providers: [TimeKeepingListService, TimeKeepingListRepository],
+  exports: [TimeKeepingListService],
 })
-export class TimeKeepingModule {}
+export class TimeKeepingListModule {}

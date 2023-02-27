@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { forwardRef, HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { plainToInstance } from 'class-transformer';
 import { RequestContext } from 'src/shared/request-context/request-context';
@@ -13,7 +13,8 @@ import { TimeKeepingListService } from './time_keeping-list.service';
 @Injectable()
 export class TimeKeepingService {
   constructor(
-    private readonly timeKeepingListService: TimeKeepingListService,
+    @Inject(forwardRef(() => TimeKeepingListService))
+    private timeKeepingListService: TimeKeepingListService,
     @InjectRepository(TimeKeeping)
     private readonly timeKeepingRepository: TimeKeepingRepository
   ) {}
