@@ -20,12 +20,6 @@ import { HttpModule } from '@nestjs/axios';
 import { CountryRepository } from './repositories/country.repository';
 import { Country } from './entities/country.entity';
 import { TimeKeepingModule } from '../time_keeping/time_keeping.module';
-import { TimeKeepingListService } from '../time_keeping/services/time_keeping-list.service';
-import { TimeKeepingService } from '../time_keeping/services/time_keeping.service';
-import { TimeKeepingRepository } from '../time_keeping/repositories/time_keeping.repository';
-import { TimeKeepingListRepository } from '../time_keeping/repositories/time_keeping-list.repository';
-import { TimeKeeping } from '../time_keeping/entities/time_keeping.entity';
-import { TimeKeepingList } from '../time_keeping/entities/time_keeping-list.entity';
 import { TimeKeepingListModule } from 'src/time_keeping/time_keeping-list.module';
 @Module({
   imports: [

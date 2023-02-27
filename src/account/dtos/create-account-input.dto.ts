@@ -1,6 +1,6 @@
 import { DetailErrorCode } from '../../shared/constant/error-code';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsEnum, IsNotEmpty, IsString, IsOptional } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsNotEmpty, IsOptional } from 'class-validator';
 import { Expose } from 'class-transformer';
 import { ErrCategoryCode, ErrDetailCode } from '../../shared/constant/errors';
 export class CreateAccountTicketInput {
@@ -33,7 +33,7 @@ export class CreateAccountTicketInput {
   @IsOptional()
   @Expose()
   type: number;
-  
+
   @ApiProperty()
   @IsOptional()
   @Expose()

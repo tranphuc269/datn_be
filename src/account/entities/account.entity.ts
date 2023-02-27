@@ -1,4 +1,3 @@
-import { User } from '../../user/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
@@ -8,8 +7,6 @@ import {
   UpdateDateColumn,
   ManyToOne,
   JoinColumn,
-  ManyToMany,
-  JoinTable,
 } from 'typeorm';
 import { RequestType } from './request-type.entity';
 

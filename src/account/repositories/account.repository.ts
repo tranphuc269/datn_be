@@ -1,5 +1,5 @@
-import { DataSource, EntityRepository, Repository } from 'typeorm';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { DataSource, Repository } from 'typeorm';
+import { Injectable } from '@nestjs/common';
 import { Account } from '../entities/account.entity';
 
 @Injectable()

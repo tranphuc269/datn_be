@@ -189,7 +189,7 @@ export class AuthService {
       let mailInput = new MailInput();
       mailInput.email = updatedData.email;
       mailInput.subject = 'Forgot password link';
-      mailInput.message = `${process.env.URL_FE}forgot-password/${token}/`;
+      mailInput.message = `${process.env.URL_FE}one-time-path/?resetKey=${token}&lang=en`;
       await this.mailService.sendMail(mailInput);
       return updatedData;
     } catch (error) {}
@@ -218,6 +218,8 @@ export class AuthService {
       const hashPassword = await bcrypt.hash(password, 10);
       let updatePasswordData = new ChangeUserInfo();
       updatePasswordData.password = hashPassword;
+      updatePasswordData.resetKey = null;
+      updatePasswordData.expiredKey = null;
       return await this.userService.updateUser(
         ctx,
         updatePasswordData,
