@@ -5,7 +5,7 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile
-    command: npm run start:debug datn_chung_api
+    command: npm run start datn_chung_api
     ports:
       - 8080:8080
       - 9229:9229
