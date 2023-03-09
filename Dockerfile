@@ -21,6 +21,8 @@ COPY --from=builder /usr/src/app/package*.json ./
 COPY --from=builder /usr/src/app/dist ./dist
 COPY ./src/migrations ./src/migrations
 COPY ./src/ormconfig.ts ./src/ormconfig.ts
+RUN mkdir node_modules/.cache && chmod -R 777 node_modules/.cache
+
 
 RUN apk --no-cache add curl
 
