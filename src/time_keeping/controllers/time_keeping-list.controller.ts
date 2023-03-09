@@ -39,17 +39,30 @@ export class TimeKeepingListController {
 
   @UseGuards(JwtAuthenticationGuard)
   @Get('timekeeping-list/:id/:month')
-  async getTimeKeepingListByMonthAndUserId(
+  async getTimeKeepingListByYearAndUserId(
     @ReqContext() ctx: RequestContext,
     @Param('id') userId: number,
     @Param('month') month: string
   ) {
     const data =
-      await this.timeKeepingListService.getTimeKeepingListByMonthAndUserId(
+      await this.timeKeepingListService.getTimeKeepingListByYearAndUserId(
         ctx,
         userId,
         month
       );
+    return { data };
+  }
+
+  @UseGuards(JwtAuthenticationGuard)
+  @Get('timekeeping-list/:id')
+  async getTimeKeepingListById(
+    @ReqContext() ctx: RequestContext,
+    @Param('id') userId: number
+  ) {
+    const data = await this.timeKeepingListService.getTimeKeepingListById(
+      ctx,
+      userId
+    );
     return { data };
   }
 }

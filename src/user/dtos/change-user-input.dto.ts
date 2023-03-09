@@ -41,4 +41,9 @@ export class ChangeUserInfo {
   @ApiPropertyOptional()
   @Expose()
   password: string;
+
+  @IsOptional()
+  @ApiPropertyOptional()
+  @Expose()
+  email: string;
 }

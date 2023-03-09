@@ -1,4 +1,10 @@
-import { forwardRef, HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import {
+  forwardRef,
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { plainToInstance } from 'class-transformer';
 import { RequestContext } from 'src/shared/request-context/request-context';
@@ -26,7 +32,7 @@ export class TimeKeepingService {
     let dateNow = new Date();
     const existRecord = await this.timeKeepingRepository
       .createQueryBuilder('time_keepings')
-      .where('time_keepings.timekeeping_list_id =:userId', {
+      .where('time_keepings.timekeeping_list_id =:timekeepingListId', {
         timekeepingListId: input.timekeepingListId,
       })
       .andWhere('CAST(time_keepings.create_date as DATE) =:dateNow', {
@@ -105,6 +111,7 @@ export class TimeKeepingService {
           endDate: endDate,
         }
       )
+      .orderBy('time_keepings.create_date', 'ASC')
       .getMany();
     return listRecord;
   }
@@ -123,7 +130,7 @@ export class TimeKeepingService {
       );
     const listRecord = await this.timeKeepingRepository
       .createQueryBuilder('time_keepings')
-      .where('time_keepings.timekeeping_list_id =:userId', {
+      .where('time_keepings.timekeeping_list_id =:timekeepingListId', {
         timekeepingListId: timekeepingList.id,
       })
       .andWhere(
@@ -165,7 +172,7 @@ export class TimeKeepingService {
   ): Promise<TimeKeepingOutput> {
     const listRecord = await this.timeKeepingRepository
       .createQueryBuilder('time_keepings')
-      .where('time_keepings.timekeeping_list_id =:userId', {
+      .where('time_keepings.timekeeping_list_id =:timekeepingListId', {
         timekeepingListId: timekeepingListId,
       })
       .andWhere('CAST(time_keepings.create_date as DATE) = :date', {
@@ -184,7 +191,7 @@ export class TimeKeepingService {
     const listRecord = await this.timeKeepingRepository
       .createQueryBuilder('time_keepings')
       .select('SUM(time_keepings.work_amount_id) as sum')
-      .where('time_keepings.timekeeping_list_id =:userId', {
+      .where('time_keepings.timekeeping_list_id =:timekeepingListId', {
         timekeepingListId: timekeepingListId,
       })
       .andWhere(

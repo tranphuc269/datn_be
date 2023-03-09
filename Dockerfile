@@ -24,6 +24,6 @@ COPY ./src/ormconfig.ts ./src/ormconfig.ts
 
 RUN apk --no-cache add curl
 
-EXPOSE 3000
+EXPOSE 8080
 
 USER node

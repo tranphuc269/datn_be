@@ -227,4 +227,15 @@ export class UserController {
       return await this.userService.getDefaultData(ctx, id);
     } catch (error) {}
   }
+
+  @UseGuards(JwtAuthenticationGuard)
+  @Get('get-info-employee/:id')
+  async getInfoByEmployeeId(
+    @ReqContext() ctx: RequestContext,
+    @Param('id') id: string
+  ) {
+    try {
+      return await this.userService.getInfoByEmployeeId(ctx, id);
+    } catch (error) {}
+  }
 }

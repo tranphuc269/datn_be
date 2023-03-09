@@ -86,7 +86,63 @@ export class TimeKeepingListService {
           }
         )
         .getOne();
-      return listRecord;
+      return plainToInstance(TimeKeepingListOutput, listRecord, {
+        excludeExtraneousValues: true,
+      });
+    } catch (error) {}
+  }
+
+  async getTimeKeepingListByYearAndUserId(
+    ctx: RequestContext,
+    userId: number,
+    month: string
+  ): Promise<TimeKeepingListOutput[]> {
+    try {
+      let date = new Date(month);
+      let startDate = moment(date).startOf('year').format('YYYY-MM-DD');
+      let endDate = moment(date).endOf('year').format('YYYY-MM-DD');
+      const listRecord = await this.timeKeepingListRepository
+        .createQueryBuilder('time_keeping_lists')
+        .where('time_keeping_lists.user_id =:userId', {
+          userId: userId,
+        })
+        .andWhere(
+          'CAST(time_keeping_lists.month as DATE) between :startDate and :endDate',
+          {
+            startDate: startDate,
+            endDate: endDate,
+          }
+        )
+        .getMany();
+      const tmpListData = [];
+      listRecord.forEach((element) => {
+        tmpListData.push({
+          ...element,
+          startDate: new Date(
+            moment(element.month).startOf('month').format('YYYY-MM-DD')
+          ),
+          endDate: new Date(
+            moment(element.month).endOf('month').format('YYYY-MM-DD')
+          ),
+        });
+      });
+      return plainToInstance(TimeKeepingListOutput, tmpListData, {
+        excludeExtraneousValues: true,
+      });
+    } catch (error) {}
+  }
+  async getTimeKeepingListById(
+    ctx: RequestContext,
+    userId: number
+  ): Promise<TimeKeepingListOutput> {
+    try {
+      const listRecord = await this.timeKeepingListRepository.findOneBy({
+        id: userId,
+      });
+
+      return plainToInstance(TimeKeepingListOutput, listRecord, {
+        excludeExtraneousValues: true,
+      });
     } catch (error) {}
   }
 }

@@ -164,10 +164,20 @@ export class UserService {
     input: ChangeContactUserInfo
   ): Promise<ContactUserOutput> {
     let userId = input.id;
-    const user = await this.contactUserRepository.findOneBy({ id: userId });
-    this.contactUserRepository.merge(user, input);
-    const savedUser = await this.contactUserRepository.save(user);
-    return plainToInstance(ContactUserOutput, savedUser, {
+    const contactUser = await this.contactUserRepository.findOneBy({
+      id: userId,
+    });
+
+    const user = await this.getById(userId);
+    if (input.email !== user.email) {
+      const updateUser = new ChangeUserInfo();
+      updateUser.email = input.email;
+      await this.updateUser(ctx, updateUser, userId);
+    }
+    this.contactUserRepository.merge(contactUser, input);
+    const savedUser = await this.contactUserRepository.save(contactUser);
+    const returnData = { ...savedUser, email: input.email };
+    return plainToInstance(ContactUserOutput, returnData, {
       excludeExtraneousValues: true,
     });
   }
@@ -319,6 +329,18 @@ export class UserService {
         return { email: existRecord[0].email };
       }
       return null;
+    } catch (error) {}
+  }
+
+  async getInfoByEmployeeId(
+    ctx: RequestContext,
+    employeeId: string
+  ): Promise<any> {
+    try {
+      const listUser = await this.userRepository.query(
+        `SELECT * FROM datn_chung_db.user_personals, datn_chung_db.user_works where datn_chung_db.user_personals.id = datn_chung_db.user_works.id and datn_chung_db.user_works.employee_id LIKE 'NV${employeeId}%';`
+      );
+      return listUser;
     } catch (error) {}
   }
 }

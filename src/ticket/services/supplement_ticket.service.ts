@@ -21,10 +21,12 @@ import { UserService } from 'src/user/services/user.service.spec';
 import { MailInput } from 'src/user/dtos/mail.dto';
 import { MailService } from 'src/user/services/mail.service';
 import * as moment from 'moment';
+import { TimeKeepingListService } from 'src/time_keeping/services/time_keeping-list.service';
 @Injectable()
 export class SupplementTicketService {
   constructor(
     private readonly timeKeepingService: TimeKeepingService,
+    private readonly timeKeepingListService: TimeKeepingListService,
     private readonly userService: UserService,
     private readonly mailService: MailService,
     @InjectRepository(SupplementTicket)
@@ -160,13 +162,18 @@ export class SupplementTicketService {
     }
     const paid = this.supplementTicketRepository.merge(dbTicket, input);
     const savedPaid = await this.supplementTicketRepository.save(paid);
+    const timekeepingListRecord =
+      await this.timeKeepingListService.getTimeKeepingListByMonthAndUserId(
+        ctx,
+        dbTicket.createPersonId,
+        dbTicket.startTime.toISOString().substr(0, 7)
+      );
     const timekeepingRecord =
       await this.timeKeepingService.getRecordByDateAndUserId(
         ctx,
-        dbTicket.createPersonId,
+        timekeepingListRecord.id,
         dbTicket.startTime.toISOString().substr(0, 10)
       );
-
     const startMinutes =
       (dbTicket.startTime.getHours() * 60 + dbTicket.startTime.getMinutes()) /
       60;

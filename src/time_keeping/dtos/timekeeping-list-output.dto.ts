@@ -13,4 +13,12 @@ export class TimeKeepingListOutput {
   @ApiProperty()
   @Expose()
   month: Date;
+
+  @ApiProperty()
+  @Expose()
+  startDate: Date;
+
+  @ApiProperty()
+  @Expose()
+  endDate: Date;
 }

@@ -22,10 +22,12 @@ import { UserService } from '../../user/services/user.service.spec';
 import { MailService } from 'src/user/services/mail.service';
 import { MailInput } from 'src/user/dtos/mail.dto';
 import { GetPaidTicketOutput } from '../dtos/get-paid-output.dto';
+import { TimeKeepingListService } from 'src/time_keeping/services/time_keeping-list.service';
 @Injectable()
 export class PaidTicketService {
   constructor(
     private readonly timeKeepingService: TimeKeepingService,
+    private readonly timeKeepingListService: TimeKeepingListService,
     private readonly paidTypeService: PaidTypeService,
     private readonly userService: UserService,
     private readonly mailService: MailService,
@@ -286,10 +288,16 @@ export class PaidTicketService {
       }
       const paid = this.paidTicketRepository.merge(dbTicket, input);
       const savedPaid = await this.paidTicketRepository.save(paid);
+      const timekeepingListRecord =
+        await this.timeKeepingListService.getTimeKeepingListByMonthAndUserId(
+          ctx,
+          dbTicket.createPersonId,
+          dbTicket.startTime.toISOString().substr(0, 7)
+        );
       const timekeepingRecord =
         await this.timeKeepingService.getRecordByDateAndUserId(
           ctx,
-          dbTicket.createPersonId,
+          timekeepingListRecord.id,
           dbTicket.startTime.toISOString().substr(0, 10)
         );
       const morningTime = new Date(timekeepingRecord.createDate.setHours(8));
